@@ -1406,7 +1406,7 @@ type DouyinCommentActionResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	BaseResp *BaseResp `protobuf:"bytes,1,opt,name=base_resp,json=baseResp,proto3" json:"base_resp,omitempty" form:"base_resp" query:"base_resp"`
-	Comment  *Comment  `protobuf:"bytes,2,opt,name=comment,proto3" json:"comment,omitempty" form:"comment" query:"comment"` // 评论成功返回评论内容，不需要重新拉取整个列表--可选
+	Comment  *Comment  `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty" form:"message" query:"message"` // 评论成功返回评论内容，不需要重新拉取整个列表--可选
 }
 
 func (x *DouyinCommentActionResponse) Reset() {
@@ -2745,7 +2745,7 @@ var file_apiServer_proto_depIdxs = []int32{
 	4,  // 12: ApiServer.DouyinFavoriteListResponse.base_resp:type_name -> ApiServer.BaseResp
 	1,  // 13: ApiServer.DouyinFavoriteListResponse.video_list:type_name -> ApiServer.Video
 	4,  // 14: ApiServer.DouyinCommentActionResponse.base_resp:type_name -> ApiServer.BaseResp
-	3,  // 15: ApiServer.DouyinCommentActionResponse.comment:type_name -> ApiServer.Comment
+	3,  // 15: ApiServer.DouyinCommentActionResponse.message:type_name -> ApiServer.Comment
 	4,  // 16: ApiServer.DouyinCommentListResponse.base_resp:type_name -> ApiServer.BaseResp
 	3,  // 17: ApiServer.DouyinCommentListResponse.comment_list:type_name -> ApiServer.Comment
 	4,  // 18: ApiServer.DouyinRelationActionResponse.base_resp:type_name -> ApiServer.BaseResp
