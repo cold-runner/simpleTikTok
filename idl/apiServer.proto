@@ -224,8 +224,8 @@ service ApiService {
   // interaction api
   rpc FavoriteAction  (DouyinFavoriteActionRequest) returns (DouyinFavoriteActionResponse) {option (api.post) = "/douyin/favorite/action/";}
   rpc FavoriteList   (DouyinFavoriteListRequest) returns (DouyinFavoriteActionResponse) {option (api.get) = "/douyin/favorite/list/";}
-  rpc CommentAction  (DouyinCommentActionRequest) returns (DouyinCommentActionResponse) {option (api.post) = "/douyin/comment/action/";}
-  rpc CommentList  (DouyinCommentListRequest) returns (DouyinCommentListResponse) {option (api.get) = "/douyin/comment/list/";}
+  rpc CommentAction  (DouyinCommentActionRequest) returns (DouyinCommentActionResponse) {option (api.post) = "/douyin/message/action/";}
+  rpc CommentList  (DouyinCommentListRequest) returns (DouyinCommentListResponse) {option (api.get) = "/douyin/message/list/";}
 
   // social api
   rpc RelationAction (DouyinRelationActionRequest) returns (DouyinRelationActionResponse) {option (api.post) = "/douyin/relation/action/";}
