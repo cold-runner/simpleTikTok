@@ -18,7 +18,7 @@ func Register(r *server.Hertz) {
 	{
 		_douyin := root.Group("/douyin", _douyinMw()...)
 		{
-			_comment := _douyin.Group("/comment", _commentMw()...)
+			_comment := _douyin.Group("/message", _commentMw()...)
 			{
 				_action := _comment.Group("/action", _actionMw()...)
 				_action.POST("/", append(_commentactionMw(), ApiServer.CommentAction)...)

@@ -139,7 +139,7 @@ func FavoriteList(ctx context.Context, c *app.RequestContext) {
 }
 
 // CommentAction .
-// @router /douyin/comment/action/ [POST]
+// @router /douyin/message/action/ [POST]
 func CommentAction(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req ApiServer.DouyinCommentActionRequest
@@ -155,7 +155,7 @@ func CommentAction(ctx context.Context, c *app.RequestContext) {
 }
 
 // CommentList .
-// @router /douyin/comment/list/ [GET]
+// @router /douyin/message/list/ [GET]
 func CommentList(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req ApiServer.DouyinCommentListRequest
