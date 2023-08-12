@@ -6,7 +6,6 @@ package query
 
 import (
 	"context"
-	"github.com/cold-runner/simpleTikTok/pkg/dao/model"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -16,6 +15,8 @@ import (
 	"gorm.io/gen/field"
 
 	"gorm.io/plugin/dbresolver"
+
+	"github.com/cold-runner/simpleTikTok/pkg/dao/model"
 )
 
 func newFriend(db *gorm.DB, opts ...gen.DOOption) friend {
@@ -26,9 +27,9 @@ func newFriend(db *gorm.DB, opts ...gen.DOOption) friend {
 
 	tableName := _friend.friendDo.TableName()
 	_friend.ALL = field.NewAsterisk(tableName)
-	_friend.ID = field.NewInt32(tableName, "id")
-	_friend.UserID = field.NewInt32(tableName, "user_id")
-	_friend.FriendID = field.NewInt32(tableName, "friend_id")
+	_friend.ID = field.NewInt64(tableName, "id")
+	_friend.UserID = field.NewInt64(tableName, "user_id")
+	_friend.FriendID = field.NewInt64(tableName, "friend_id")
 
 	_friend.fillFieldMap()
 
@@ -36,12 +37,12 @@ func newFriend(db *gorm.DB, opts ...gen.DOOption) friend {
 }
 
 type friend struct {
-	friendDo friendDo
+	friendDo
 
 	ALL      field.Asterisk
-	ID       field.Int32
-	UserID   field.Int32
-	FriendID field.Int32
+	ID       field.Int64
+	UserID   field.Int64
+	FriendID field.Int64
 
 	fieldMap map[string]field.Expr
 }
@@ -58,22 +59,14 @@ func (f friend) As(alias string) *friend {
 
 func (f *friend) updateTableName(table string) *friend {
 	f.ALL = field.NewAsterisk(table)
-	f.ID = field.NewInt32(table, "id")
-	f.UserID = field.NewInt32(table, "user_id")
-	f.FriendID = field.NewInt32(table, "friend_id")
+	f.ID = field.NewInt64(table, "id")
+	f.UserID = field.NewInt64(table, "user_id")
+	f.FriendID = field.NewInt64(table, "friend_id")
 
 	f.fillFieldMap()
 
 	return f
 }
-
-func (f *friend) WithContext(ctx context.Context) *friendDo { return f.friendDo.WithContext(ctx) }
-
-func (f friend) TableName() string { return f.friendDo.TableName() }
-
-func (f friend) Alias() string { return f.friendDo.Alias() }
-
-func (f friend) Columns(cols ...field.Expr) gen.Columns { return f.friendDo.Columns(cols...) }
 
 func (f *friend) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := f.fieldMap[fieldName]
@@ -103,95 +96,156 @@ func (f friend) replaceDB(db *gorm.DB) friend {
 
 type friendDo struct{ gen.DO }
 
-func (f friendDo) Debug() *friendDo {
+type IFriendDo interface {
+	gen.SubQuery
+	Debug() IFriendDo
+	WithContext(ctx context.Context) IFriendDo
+	WithResult(fc func(tx gen.Dao)) gen.ResultInfo
+	ReplaceDB(db *gorm.DB)
+	ReadDB() IFriendDo
+	WriteDB() IFriendDo
+	As(alias string) gen.Dao
+	Session(config *gorm.Session) IFriendDo
+	Columns(cols ...field.Expr) gen.Columns
+	Clauses(conds ...clause.Expression) IFriendDo
+	Not(conds ...gen.Condition) IFriendDo
+	Or(conds ...gen.Condition) IFriendDo
+	Select(conds ...field.Expr) IFriendDo
+	Where(conds ...gen.Condition) IFriendDo
+	Order(conds ...field.Expr) IFriendDo
+	Distinct(cols ...field.Expr) IFriendDo
+	Omit(cols ...field.Expr) IFriendDo
+	Join(table schema.Tabler, on ...field.Expr) IFriendDo
+	LeftJoin(table schema.Tabler, on ...field.Expr) IFriendDo
+	RightJoin(table schema.Tabler, on ...field.Expr) IFriendDo
+	Group(cols ...field.Expr) IFriendDo
+	Having(conds ...gen.Condition) IFriendDo
+	Limit(limit int) IFriendDo
+	Offset(offset int) IFriendDo
+	Count() (count int64, err error)
+	Scopes(funcs ...func(gen.Dao) gen.Dao) IFriendDo
+	Unscoped() IFriendDo
+	Create(values ...*model.Friend) error
+	CreateInBatches(values []*model.Friend, batchSize int) error
+	Save(values ...*model.Friend) error
+	First() (*model.Friend, error)
+	Take() (*model.Friend, error)
+	Last() (*model.Friend, error)
+	Find() ([]*model.Friend, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Friend, err error)
+	FindInBatches(result *[]*model.Friend, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Pluck(column field.Expr, dest interface{}) error
+	Delete(...*model.Friend) (info gen.ResultInfo, err error)
+	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	Updates(value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumn(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumnSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	UpdateColumns(value interface{}) (info gen.ResultInfo, err error)
+	UpdateFrom(q gen.SubQuery) gen.Dao
+	Attrs(attrs ...field.AssignExpr) IFriendDo
+	Assign(attrs ...field.AssignExpr) IFriendDo
+	Joins(fields ...field.RelationField) IFriendDo
+	Preload(fields ...field.RelationField) IFriendDo
+	FirstOrInit() (*model.Friend, error)
+	FirstOrCreate() (*model.Friend, error)
+	FindByPage(offset int, limit int) (result []*model.Friend, count int64, err error)
+	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
+	Scan(result interface{}) (err error)
+	Returning(value interface{}, columns ...string) IFriendDo
+	UnderlyingDB() *gorm.DB
+	schema.Tabler
+}
+
+func (f friendDo) Debug() IFriendDo {
 	return f.withDO(f.DO.Debug())
 }
 
-func (f friendDo) WithContext(ctx context.Context) *friendDo {
+func (f friendDo) WithContext(ctx context.Context) IFriendDo {
 	return f.withDO(f.DO.WithContext(ctx))
 }
 
-func (f friendDo) ReadDB() *friendDo {
+func (f friendDo) ReadDB() IFriendDo {
 	return f.Clauses(dbresolver.Read)
 }
 
-func (f friendDo) WriteDB() *friendDo {
+func (f friendDo) WriteDB() IFriendDo {
 	return f.Clauses(dbresolver.Write)
 }
 
-func (f friendDo) Session(config *gorm.Session) *friendDo {
+func (f friendDo) Session(config *gorm.Session) IFriendDo {
 	return f.withDO(f.DO.Session(config))
 }
 
-func (f friendDo) Clauses(conds ...clause.Expression) *friendDo {
+func (f friendDo) Clauses(conds ...clause.Expression) IFriendDo {
 	return f.withDO(f.DO.Clauses(conds...))
 }
 
-func (f friendDo) Returning(value interface{}, columns ...string) *friendDo {
+func (f friendDo) Returning(value interface{}, columns ...string) IFriendDo {
 	return f.withDO(f.DO.Returning(value, columns...))
 }
 
-func (f friendDo) Not(conds ...gen.Condition) *friendDo {
+func (f friendDo) Not(conds ...gen.Condition) IFriendDo {
 	return f.withDO(f.DO.Not(conds...))
 }
 
-func (f friendDo) Or(conds ...gen.Condition) *friendDo {
+func (f friendDo) Or(conds ...gen.Condition) IFriendDo {
 	return f.withDO(f.DO.Or(conds...))
 }
 
-func (f friendDo) Select(conds ...field.Expr) *friendDo {
+func (f friendDo) Select(conds ...field.Expr) IFriendDo {
 	return f.withDO(f.DO.Select(conds...))
 }
 
-func (f friendDo) Where(conds ...gen.Condition) *friendDo {
+func (f friendDo) Where(conds ...gen.Condition) IFriendDo {
 	return f.withDO(f.DO.Where(conds...))
 }
 
-func (f friendDo) Order(conds ...field.Expr) *friendDo {
+func (f friendDo) Order(conds ...field.Expr) IFriendDo {
 	return f.withDO(f.DO.Order(conds...))
 }
 
-func (f friendDo) Distinct(cols ...field.Expr) *friendDo {
+func (f friendDo) Distinct(cols ...field.Expr) IFriendDo {
 	return f.withDO(f.DO.Distinct(cols...))
 }
 
-func (f friendDo) Omit(cols ...field.Expr) *friendDo {
+func (f friendDo) Omit(cols ...field.Expr) IFriendDo {
 	return f.withDO(f.DO.Omit(cols...))
 }
 
-func (f friendDo) Join(table schema.Tabler, on ...field.Expr) *friendDo {
+func (f friendDo) Join(table schema.Tabler, on ...field.Expr) IFriendDo {
 	return f.withDO(f.DO.Join(table, on...))
 }
 
-func (f friendDo) LeftJoin(table schema.Tabler, on ...field.Expr) *friendDo {
+func (f friendDo) LeftJoin(table schema.Tabler, on ...field.Expr) IFriendDo {
 	return f.withDO(f.DO.LeftJoin(table, on...))
 }
 
-func (f friendDo) RightJoin(table schema.Tabler, on ...field.Expr) *friendDo {
+func (f friendDo) RightJoin(table schema.Tabler, on ...field.Expr) IFriendDo {
 	return f.withDO(f.DO.RightJoin(table, on...))
 }
 
-func (f friendDo) Group(cols ...field.Expr) *friendDo {
+func (f friendDo) Group(cols ...field.Expr) IFriendDo {
 	return f.withDO(f.DO.Group(cols...))
 }
 
-func (f friendDo) Having(conds ...gen.Condition) *friendDo {
+func (f friendDo) Having(conds ...gen.Condition) IFriendDo {
 	return f.withDO(f.DO.Having(conds...))
 }
 
-func (f friendDo) Limit(limit int) *friendDo {
+func (f friendDo) Limit(limit int) IFriendDo {
 	return f.withDO(f.DO.Limit(limit))
 }
 
-func (f friendDo) Offset(offset int) *friendDo {
+func (f friendDo) Offset(offset int) IFriendDo {
 	return f.withDO(f.DO.Offset(offset))
 }
 
-func (f friendDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *friendDo {
+func (f friendDo) Scopes(funcs ...func(gen.Dao) gen.Dao) IFriendDo {
 	return f.withDO(f.DO.Scopes(funcs...))
 }
 
-func (f friendDo) Unscoped() *friendDo {
+func (f friendDo) Unscoped() IFriendDo {
 	return f.withDO(f.DO.Unscoped())
 }
 
@@ -257,22 +311,22 @@ func (f friendDo) FindInBatches(result *[]*model.Friend, batchSize int, fc func(
 	return f.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (f friendDo) Attrs(attrs ...field.AssignExpr) *friendDo {
+func (f friendDo) Attrs(attrs ...field.AssignExpr) IFriendDo {
 	return f.withDO(f.DO.Attrs(attrs...))
 }
 
-func (f friendDo) Assign(attrs ...field.AssignExpr) *friendDo {
+func (f friendDo) Assign(attrs ...field.AssignExpr) IFriendDo {
 	return f.withDO(f.DO.Assign(attrs...))
 }
 
-func (f friendDo) Joins(fields ...field.RelationField) *friendDo {
+func (f friendDo) Joins(fields ...field.RelationField) IFriendDo {
 	for _, _f := range fields {
 		f = *f.withDO(f.DO.Joins(_f))
 	}
 	return &f
 }
 
-func (f friendDo) Preload(fields ...field.RelationField) *friendDo {
+func (f friendDo) Preload(fields ...field.RelationField) IFriendDo {
 	for _, _f := range fields {
 		f = *f.withDO(f.DO.Preload(_f))
 	}

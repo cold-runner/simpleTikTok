@@ -8,17 +8,17 @@ const TableNameUser = "user"
 
 // User mapped from table <user>
 type User struct {
-	ID              int32  `gorm:"column:id;primaryKey" json:"id"`
-	Username        string `gorm:"column:username" json:"username"`
-	Password        string `gorm:"column:password" json:"password"`
-	FollowCount     int64  `gorm:"column:follow_count" json:"follow_count"`
-	FollowerCount   int64  `gorm:"column:follower_count" json:"follower_count"`
-	Avatar          string `gorm:"column:avatar" json:"avatar"`
-	BackgroundImage string `gorm:"column:background_image" json:"background_image"`
-	Signature       string `gorm:"column:signature" json:"signature"`
-	TotalFavorited  int64  `gorm:"column:total_favorited" json:"total_favorited"`
-	WorkCount       int64  `gorm:"column:work_count" json:"work_count"`
-	FavoriteCount   int64  `gorm:"column:favorite_count" json:"favorite_count"`
+	ID              int64  `gorm:"column:id;type:int;primaryKey" json:"id,string"`
+	Username        string `gorm:"column:username;type:varchar(32)" json:"username"`
+	Password        string `gorm:"column:password;type:varchar(32)" json:"password"`
+	FollowCount     int64  `gorm:"column:follow_count;type:bigint" json:"follow_count"`
+	FollowerCount   int64  `gorm:"column:follower_count;type:bigint" json:"follower_count"`
+	Avatar          string `gorm:"column:avatar;type:varchar(255)" json:"avatar"`
+	BackgroundImage string `gorm:"column:background_image;type:varchar(255)" json:"background_image"`
+	Signature       string `gorm:"column:signature;type:text" json:"signature"`
+	TotalFavorited  int64  `gorm:"column:total_favorited;type:bigint" json:"total_favorited"`
+	WorkCount       int64  `gorm:"column:work_count;type:bigint" json:"work_count"`
+	FavoriteCount   int64  `gorm:"column:favorite_count;type:bigint" json:"favorite_count"`
 }
 
 // TableName User's table name

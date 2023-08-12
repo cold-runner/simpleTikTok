@@ -6,7 +6,6 @@ package query
 
 import (
 	"context"
-	"github.com/cold-runner/simpleTikTok/pkg/dao/model"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -16,6 +15,8 @@ import (
 	"gorm.io/gen/field"
 
 	"gorm.io/plugin/dbresolver"
+
+	"github.com/cold-runner/simpleTikTok/pkg/dao/model"
 )
 
 func newChat(db *gorm.DB, opts ...gen.DOOption) chat {
@@ -26,11 +27,11 @@ func newChat(db *gorm.DB, opts ...gen.DOOption) chat {
 
 	tableName := _chat.chatDo.TableName()
 	_chat.ALL = field.NewAsterisk(tableName)
-	_chat.ID = field.NewInt32(tableName, "id")
-	_chat.UserID = field.NewInt32(tableName, "user_id")
+	_chat.ID = field.NewInt64(tableName, "id")
+	_chat.UserID = field.NewInt64(tableName, "user_id")
 	_chat.Content = field.NewString(tableName, "content")
 	_chat.CreatedAt = field.NewTime(tableName, "created_at")
-	_chat.Object = field.NewInt32(tableName, "object")
+	_chat.Object = field.NewInt64(tableName, "object")
 
 	_chat.fillFieldMap()
 
@@ -38,14 +39,14 @@ func newChat(db *gorm.DB, opts ...gen.DOOption) chat {
 }
 
 type chat struct {
-	chatDo chatDo
+	chatDo
 
 	ALL       field.Asterisk
-	ID        field.Int32
-	UserID    field.Int32
+	ID        field.Int64
+	UserID    field.Int64
 	Content   field.String
 	CreatedAt field.Time
-	Object    field.Int32
+	Object    field.Int64
 
 	fieldMap map[string]field.Expr
 }
@@ -62,24 +63,16 @@ func (c chat) As(alias string) *chat {
 
 func (c *chat) updateTableName(table string) *chat {
 	c.ALL = field.NewAsterisk(table)
-	c.ID = field.NewInt32(table, "id")
-	c.UserID = field.NewInt32(table, "user_id")
+	c.ID = field.NewInt64(table, "id")
+	c.UserID = field.NewInt64(table, "user_id")
 	c.Content = field.NewString(table, "content")
 	c.CreatedAt = field.NewTime(table, "created_at")
-	c.Object = field.NewInt32(table, "object")
+	c.Object = field.NewInt64(table, "object")
 
 	c.fillFieldMap()
 
 	return c
 }
-
-func (c *chat) WithContext(ctx context.Context) *chatDo { return c.chatDo.WithContext(ctx) }
-
-func (c chat) TableName() string { return c.chatDo.TableName() }
-
-func (c chat) Alias() string { return c.chatDo.Alias() }
-
-func (c chat) Columns(cols ...field.Expr) gen.Columns { return c.chatDo.Columns(cols...) }
 
 func (c *chat) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := c.fieldMap[fieldName]
@@ -111,95 +104,156 @@ func (c chat) replaceDB(db *gorm.DB) chat {
 
 type chatDo struct{ gen.DO }
 
-func (c chatDo) Debug() *chatDo {
+type IChatDo interface {
+	gen.SubQuery
+	Debug() IChatDo
+	WithContext(ctx context.Context) IChatDo
+	WithResult(fc func(tx gen.Dao)) gen.ResultInfo
+	ReplaceDB(db *gorm.DB)
+	ReadDB() IChatDo
+	WriteDB() IChatDo
+	As(alias string) gen.Dao
+	Session(config *gorm.Session) IChatDo
+	Columns(cols ...field.Expr) gen.Columns
+	Clauses(conds ...clause.Expression) IChatDo
+	Not(conds ...gen.Condition) IChatDo
+	Or(conds ...gen.Condition) IChatDo
+	Select(conds ...field.Expr) IChatDo
+	Where(conds ...gen.Condition) IChatDo
+	Order(conds ...field.Expr) IChatDo
+	Distinct(cols ...field.Expr) IChatDo
+	Omit(cols ...field.Expr) IChatDo
+	Join(table schema.Tabler, on ...field.Expr) IChatDo
+	LeftJoin(table schema.Tabler, on ...field.Expr) IChatDo
+	RightJoin(table schema.Tabler, on ...field.Expr) IChatDo
+	Group(cols ...field.Expr) IChatDo
+	Having(conds ...gen.Condition) IChatDo
+	Limit(limit int) IChatDo
+	Offset(offset int) IChatDo
+	Count() (count int64, err error)
+	Scopes(funcs ...func(gen.Dao) gen.Dao) IChatDo
+	Unscoped() IChatDo
+	Create(values ...*model.Chat) error
+	CreateInBatches(values []*model.Chat, batchSize int) error
+	Save(values ...*model.Chat) error
+	First() (*model.Chat, error)
+	Take() (*model.Chat, error)
+	Last() (*model.Chat, error)
+	Find() ([]*model.Chat, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Chat, err error)
+	FindInBatches(result *[]*model.Chat, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Pluck(column field.Expr, dest interface{}) error
+	Delete(...*model.Chat) (info gen.ResultInfo, err error)
+	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	Updates(value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumn(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumnSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	UpdateColumns(value interface{}) (info gen.ResultInfo, err error)
+	UpdateFrom(q gen.SubQuery) gen.Dao
+	Attrs(attrs ...field.AssignExpr) IChatDo
+	Assign(attrs ...field.AssignExpr) IChatDo
+	Joins(fields ...field.RelationField) IChatDo
+	Preload(fields ...field.RelationField) IChatDo
+	FirstOrInit() (*model.Chat, error)
+	FirstOrCreate() (*model.Chat, error)
+	FindByPage(offset int, limit int) (result []*model.Chat, count int64, err error)
+	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
+	Scan(result interface{}) (err error)
+	Returning(value interface{}, columns ...string) IChatDo
+	UnderlyingDB() *gorm.DB
+	schema.Tabler
+}
+
+func (c chatDo) Debug() IChatDo {
 	return c.withDO(c.DO.Debug())
 }
 
-func (c chatDo) WithContext(ctx context.Context) *chatDo {
+func (c chatDo) WithContext(ctx context.Context) IChatDo {
 	return c.withDO(c.DO.WithContext(ctx))
 }
 
-func (c chatDo) ReadDB() *chatDo {
+func (c chatDo) ReadDB() IChatDo {
 	return c.Clauses(dbresolver.Read)
 }
 
-func (c chatDo) WriteDB() *chatDo {
+func (c chatDo) WriteDB() IChatDo {
 	return c.Clauses(dbresolver.Write)
 }
 
-func (c chatDo) Session(config *gorm.Session) *chatDo {
+func (c chatDo) Session(config *gorm.Session) IChatDo {
 	return c.withDO(c.DO.Session(config))
 }
 
-func (c chatDo) Clauses(conds ...clause.Expression) *chatDo {
+func (c chatDo) Clauses(conds ...clause.Expression) IChatDo {
 	return c.withDO(c.DO.Clauses(conds...))
 }
 
-func (c chatDo) Returning(value interface{}, columns ...string) *chatDo {
+func (c chatDo) Returning(value interface{}, columns ...string) IChatDo {
 	return c.withDO(c.DO.Returning(value, columns...))
 }
 
-func (c chatDo) Not(conds ...gen.Condition) *chatDo {
+func (c chatDo) Not(conds ...gen.Condition) IChatDo {
 	return c.withDO(c.DO.Not(conds...))
 }
 
-func (c chatDo) Or(conds ...gen.Condition) *chatDo {
+func (c chatDo) Or(conds ...gen.Condition) IChatDo {
 	return c.withDO(c.DO.Or(conds...))
 }
 
-func (c chatDo) Select(conds ...field.Expr) *chatDo {
+func (c chatDo) Select(conds ...field.Expr) IChatDo {
 	return c.withDO(c.DO.Select(conds...))
 }
 
-func (c chatDo) Where(conds ...gen.Condition) *chatDo {
+func (c chatDo) Where(conds ...gen.Condition) IChatDo {
 	return c.withDO(c.DO.Where(conds...))
 }
 
-func (c chatDo) Order(conds ...field.Expr) *chatDo {
+func (c chatDo) Order(conds ...field.Expr) IChatDo {
 	return c.withDO(c.DO.Order(conds...))
 }
 
-func (c chatDo) Distinct(cols ...field.Expr) *chatDo {
+func (c chatDo) Distinct(cols ...field.Expr) IChatDo {
 	return c.withDO(c.DO.Distinct(cols...))
 }
 
-func (c chatDo) Omit(cols ...field.Expr) *chatDo {
+func (c chatDo) Omit(cols ...field.Expr) IChatDo {
 	return c.withDO(c.DO.Omit(cols...))
 }
 
-func (c chatDo) Join(table schema.Tabler, on ...field.Expr) *chatDo {
+func (c chatDo) Join(table schema.Tabler, on ...field.Expr) IChatDo {
 	return c.withDO(c.DO.Join(table, on...))
 }
 
-func (c chatDo) LeftJoin(table schema.Tabler, on ...field.Expr) *chatDo {
+func (c chatDo) LeftJoin(table schema.Tabler, on ...field.Expr) IChatDo {
 	return c.withDO(c.DO.LeftJoin(table, on...))
 }
 
-func (c chatDo) RightJoin(table schema.Tabler, on ...field.Expr) *chatDo {
+func (c chatDo) RightJoin(table schema.Tabler, on ...field.Expr) IChatDo {
 	return c.withDO(c.DO.RightJoin(table, on...))
 }
 
-func (c chatDo) Group(cols ...field.Expr) *chatDo {
+func (c chatDo) Group(cols ...field.Expr) IChatDo {
 	return c.withDO(c.DO.Group(cols...))
 }
 
-func (c chatDo) Having(conds ...gen.Condition) *chatDo {
+func (c chatDo) Having(conds ...gen.Condition) IChatDo {
 	return c.withDO(c.DO.Having(conds...))
 }
 
-func (c chatDo) Limit(limit int) *chatDo {
+func (c chatDo) Limit(limit int) IChatDo {
 	return c.withDO(c.DO.Limit(limit))
 }
 
-func (c chatDo) Offset(offset int) *chatDo {
+func (c chatDo) Offset(offset int) IChatDo {
 	return c.withDO(c.DO.Offset(offset))
 }
 
-func (c chatDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *chatDo {
+func (c chatDo) Scopes(funcs ...func(gen.Dao) gen.Dao) IChatDo {
 	return c.withDO(c.DO.Scopes(funcs...))
 }
 
-func (c chatDo) Unscoped() *chatDo {
+func (c chatDo) Unscoped() IChatDo {
 	return c.withDO(c.DO.Unscoped())
 }
 
@@ -265,22 +319,22 @@ func (c chatDo) FindInBatches(result *[]*model.Chat, batchSize int, fc func(tx g
 	return c.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (c chatDo) Attrs(attrs ...field.AssignExpr) *chatDo {
+func (c chatDo) Attrs(attrs ...field.AssignExpr) IChatDo {
 	return c.withDO(c.DO.Attrs(attrs...))
 }
 
-func (c chatDo) Assign(attrs ...field.AssignExpr) *chatDo {
+func (c chatDo) Assign(attrs ...field.AssignExpr) IChatDo {
 	return c.withDO(c.DO.Assign(attrs...))
 }
 
-func (c chatDo) Joins(fields ...field.RelationField) *chatDo {
+func (c chatDo) Joins(fields ...field.RelationField) IChatDo {
 	for _, _f := range fields {
 		c = *c.withDO(c.DO.Joins(_f))
 	}
 	return &c
 }
 
-func (c chatDo) Preload(fields ...field.RelationField) *chatDo {
+func (c chatDo) Preload(fields ...field.RelationField) IChatDo {
 	for _, _f := range fields {
 		c = *c.withDO(c.DO.Preload(_f))
 	}

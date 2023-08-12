@@ -8,9 +8,9 @@ const TableNameFriend = "friend"
 
 // Friend mapped from table <friend>
 type Friend struct {
-	ID       int32 `gorm:"column:id;primaryKey" json:"id"`
-	UserID   int32 `gorm:"column:user_id" json:"user_id"`
-	FriendID int32 `gorm:"column:friend_id" json:"friend_id"`
+	ID       int64 `gorm:"column:id;type:int;primaryKey" json:"id,string"`
+	UserID   int64 `gorm:"column:user_id;type:int" json:"user_id"`
+	FriendID int64 `gorm:"column:friend_id;type:int" json:"friend_id"`
 }
 
 // TableName Friend's table name

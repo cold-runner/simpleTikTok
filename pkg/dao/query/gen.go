@@ -15,6 +15,28 @@ import (
 	"gorm.io/plugin/dbresolver"
 )
 
+var (
+	Q         = new(Query)
+	Chat      *chat
+	Comment   *comment
+	Follow    *follow
+	Friend    *friend
+	User      *user
+	Video     *video
+	VideoLike *videoLike
+)
+
+func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
+	*Q = *Use(db, opts...)
+	Chat = &Q.Chat
+	Comment = &Q.Comment
+	Follow = &Q.Follow
+	Friend = &Q.Friend
+	User = &Q.User
+	Video = &Q.Video
+	VideoLike = &Q.VideoLike
+}
+
 func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 	return &Query{
 		db:        db,
@@ -77,13 +99,13 @@ func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 }
 
 type queryCtx struct {
-	Chat      *chatDo
-	Comment   *commentDo
-	Follow    *followDo
-	Friend    *friendDo
-	User      *userDo
-	Video     *videoDo
-	VideoLike *videoLikeDo
+	Chat      IChatDo
+	Comment   ICommentDo
+	Follow    IFollowDo
+	Friend    IFriendDo
+	User      IUserDo
+	Video     IVideoDo
+	VideoLike IVideoLikeDo
 }
 
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
