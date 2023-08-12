@@ -1,4 +1,4 @@
-package main
+package initconfig
 
 import (
 	"github.com/cold-runner/simpleTikTok/pkg/log"
@@ -7,16 +7,8 @@ import (
 	"path/filepath"
 )
 
-type LogConfig struct {
-	DisableCaller     bool     `yaml:"disable-caller"`
-	DisableStacktrace bool     `yaml:"disable-stacktrace"`
-	Level             string   `yaml:"level"`
-	Format            string   `yaml:"format"`
-	OutputPaths       []string `yaml:"output-paths"`
-}
-
 // 初始化viper配置
-func initViperConfig() {
+func InitViperConfig() {
 	// 获取当前文件的路径
 	projectRoot, err := os.Getwd()
 	if err != nil {
@@ -48,19 +40,19 @@ func logOptions(logOpt string) *log.Options {
 		}
 	}
 	return &log.Options{
-		DisableCaller:     viper.GetBool("log.disable-caller"),
-		DisableStacktrace: viper.GetBool("log.disable-stacktrace"),
-		Level:             viper.GetString("log.level"),
-		Format:            viper.GetString("log.format"),
-		OutputPaths:       viper.GetStringSlice("log.output-paths"),
+		DisableCaller:     viper.GetBool("log-default.disable-caller"),
+		DisableStacktrace: viper.GetBool("log-default.disable-stacktrace"),
+		Level:             viper.GetString("log-default.level"),
+		Format:            viper.GetString("log-default.format"),
+		OutputPaths:       viper.GetStringSlice("log-default.output-paths"),
 	}
 
 }
 
-func main() {
-	initViperConfig()
-	opt := logOptions("log-user")
-	log.Init(opt)
-	log.Infow("hello world", "Info", "Test")
-	defer log.Sync()
-}
+//func main() {
+//	initViperConfig()
+//	opt := logOptions("log-user")
+//	log.Init(opt)
+//	log.Infow("hello world", "Info", "Test")
+//	defer log.Sync()
+//}
