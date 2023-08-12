@@ -1,4 +1,4 @@
-package initconfig
+package config
 
 import (
 	"github.com/cold-runner/simpleTikTok/pkg/log"

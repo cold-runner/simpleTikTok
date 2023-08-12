@@ -1,9 +1,30 @@
 # 日志配置
 
-## 用户服务日志配置
-log-user:
+## 公共日志配置
+log-default:
   disable-caller: false # 是否开启 caller，如果开启会在日志中显示调用日志所在的文件和行号
   disable-stacktrace: false # 是否禁止在 panic 及以上级别打印堆栈信息
   level: debug # 指定日志级别，可选值：debug, info, warn, error, dpanic, panic, fatal
   format: console # 指定日志显示格式，可选值：console, json
-  output-paths: [/tmp/log/user.log, stdout] # 指定日志输出位置，多个输出，用 `逗号 + 空格` 分开。stdout：标准输出，
+  output-paths: [ /tmp/log/common/log.log, stdout ] # 指定日志输出位置，多个输出，用 `逗号 + 空格` 分开。stdout：标准输出，
+
+## 用户服务日志配置
+log-user:
+  disable-caller: false
+  disable-stacktrace: false
+  level: debug
+  format: console
+  output-paths: [ /tmp/log/user/user.log, stdout ]
+
+# 数据库相关配置
+
+## MySQL 数据库配置
+db-user:
+  host: 127.0.0.1
+  username: tiktokAdmin
+  password: tiktok1234
+  database: tiktok
+  max-idle-connections: 100 # MySQL 最大空闲连接数，默认 100
+  max-open-connections: 100 # MySQL 最大打开的连接数，默认 100
+  max-connection-life-time: 10s # 空闲连接最大存活时间，默认 10s
+  log-level: 4 # GORM log level, 1: silent, 2:error, 3:warn, 4:info

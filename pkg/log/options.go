@@ -1,6 +1,8 @@
 package log
 
-import "go.uber.org/zap/zapcore"
+import (
+	"go.uber.org/zap/zapcore"
+)
 
 // 日志相关配置选项
 type Options struct {
