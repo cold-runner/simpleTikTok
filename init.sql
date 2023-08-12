@@ -1,3 +1,6 @@
+DROP DATABASE IF EXISTS simple_tiktok;
+CREATE DATABASE simple_tiktok;
+USE simple_tiktok;
 CREATE TABLE `follow` (
   `id` integer PRIMARY KEY,
   `following_user_id` integer,

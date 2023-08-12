@@ -12,11 +12,11 @@ const TableNameChat = "chat"
 
 // Chat mapped from table <chat>
 type Chat struct {
-	ID        int32     `gorm:"column:id;primaryKey" json:"id"`
-	UserID    int32     `gorm:"column:user_id" json:"user_id"`
-	Content   string    `gorm:"column:content" json:"content"`
-	CreatedAt time.Time `gorm:"column:created_at" json:"created_at"`
-	Object    int32     `gorm:"column:object" json:"object"`
+	ID        int64     `gorm:"column:id;type:int;primaryKey" json:"id,string"`
+	UserID    int64     `gorm:"column:user_id;type:int" json:"user_id"`
+	Content   string    `gorm:"column:content;type:text" json:"content"`
+	CreatedAt time.Time `gorm:"column:created_at;type:timestamp" json:"created_at"`
+	Object    int64     `gorm:"column:object;type:int" json:"object"`
 }
 
 // TableName Chat's table name

@@ -8,9 +8,9 @@ const TableNameVideoLike = "video_like"
 
 // VideoLike mapped from table <video_like>
 type VideoLike struct {
-	ID      int32 `gorm:"column:id;primaryKey" json:"id"`
-	UserID  int32 `gorm:"column:user_id" json:"user_id"`
-	VideoID int32 `gorm:"column:video_id" json:"video_id"`
+	ID      int64 `gorm:"column:id;type:int;primaryKey" json:"id,string"`
+	UserID  int64 `gorm:"column:user_id;type:int" json:"user_id"`
+	VideoID int64 `gorm:"column:video_id;type:int" json:"video_id"`
 }
 
 // TableName VideoLike's table name

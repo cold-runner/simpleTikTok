@@ -6,7 +6,6 @@ package query
 
 import (
 	"context"
-	"github.com/cold-runner/simpleTikTok/pkg/dao/model"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -16,6 +15,8 @@ import (
 	"gorm.io/gen/field"
 
 	"gorm.io/plugin/dbresolver"
+
+	"github.com/cold-runner/simpleTikTok/pkg/dao/model"
 )
 
 func newVideoLike(db *gorm.DB, opts ...gen.DOOption) videoLike {
@@ -26,9 +27,9 @@ func newVideoLike(db *gorm.DB, opts ...gen.DOOption) videoLike {
 
 	tableName := _videoLike.videoLikeDo.TableName()
 	_videoLike.ALL = field.NewAsterisk(tableName)
-	_videoLike.ID = field.NewInt32(tableName, "id")
-	_videoLike.UserID = field.NewInt32(tableName, "user_id")
-	_videoLike.VideoID = field.NewInt32(tableName, "video_id")
+	_videoLike.ID = field.NewInt64(tableName, "id")
+	_videoLike.UserID = field.NewInt64(tableName, "user_id")
+	_videoLike.VideoID = field.NewInt64(tableName, "video_id")
 
 	_videoLike.fillFieldMap()
 
@@ -36,12 +37,12 @@ func newVideoLike(db *gorm.DB, opts ...gen.DOOption) videoLike {
 }
 
 type videoLike struct {
-	videoLikeDo videoLikeDo
+	videoLikeDo
 
 	ALL     field.Asterisk
-	ID      field.Int32
-	UserID  field.Int32
-	VideoID field.Int32
+	ID      field.Int64
+	UserID  field.Int64
+	VideoID field.Int64
 
 	fieldMap map[string]field.Expr
 }
@@ -58,24 +59,14 @@ func (v videoLike) As(alias string) *videoLike {
 
 func (v *videoLike) updateTableName(table string) *videoLike {
 	v.ALL = field.NewAsterisk(table)
-	v.ID = field.NewInt32(table, "id")
-	v.UserID = field.NewInt32(table, "user_id")
-	v.VideoID = field.NewInt32(table, "video_id")
+	v.ID = field.NewInt64(table, "id")
+	v.UserID = field.NewInt64(table, "user_id")
+	v.VideoID = field.NewInt64(table, "video_id")
 
 	v.fillFieldMap()
 
 	return v
 }
-
-func (v *videoLike) WithContext(ctx context.Context) *videoLikeDo {
-	return v.videoLikeDo.WithContext(ctx)
-}
-
-func (v videoLike) TableName() string { return v.videoLikeDo.TableName() }
-
-func (v videoLike) Alias() string { return v.videoLikeDo.Alias() }
-
-func (v videoLike) Columns(cols ...field.Expr) gen.Columns { return v.videoLikeDo.Columns(cols...) }
 
 func (v *videoLike) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := v.fieldMap[fieldName]
@@ -105,95 +96,156 @@ func (v videoLike) replaceDB(db *gorm.DB) videoLike {
 
 type videoLikeDo struct{ gen.DO }
 
-func (v videoLikeDo) Debug() *videoLikeDo {
+type IVideoLikeDo interface {
+	gen.SubQuery
+	Debug() IVideoLikeDo
+	WithContext(ctx context.Context) IVideoLikeDo
+	WithResult(fc func(tx gen.Dao)) gen.ResultInfo
+	ReplaceDB(db *gorm.DB)
+	ReadDB() IVideoLikeDo
+	WriteDB() IVideoLikeDo
+	As(alias string) gen.Dao
+	Session(config *gorm.Session) IVideoLikeDo
+	Columns(cols ...field.Expr) gen.Columns
+	Clauses(conds ...clause.Expression) IVideoLikeDo
+	Not(conds ...gen.Condition) IVideoLikeDo
+	Or(conds ...gen.Condition) IVideoLikeDo
+	Select(conds ...field.Expr) IVideoLikeDo
+	Where(conds ...gen.Condition) IVideoLikeDo
+	Order(conds ...field.Expr) IVideoLikeDo
+	Distinct(cols ...field.Expr) IVideoLikeDo
+	Omit(cols ...field.Expr) IVideoLikeDo
+	Join(table schema.Tabler, on ...field.Expr) IVideoLikeDo
+	LeftJoin(table schema.Tabler, on ...field.Expr) IVideoLikeDo
+	RightJoin(table schema.Tabler, on ...field.Expr) IVideoLikeDo
+	Group(cols ...field.Expr) IVideoLikeDo
+	Having(conds ...gen.Condition) IVideoLikeDo
+	Limit(limit int) IVideoLikeDo
+	Offset(offset int) IVideoLikeDo
+	Count() (count int64, err error)
+	Scopes(funcs ...func(gen.Dao) gen.Dao) IVideoLikeDo
+	Unscoped() IVideoLikeDo
+	Create(values ...*model.VideoLike) error
+	CreateInBatches(values []*model.VideoLike, batchSize int) error
+	Save(values ...*model.VideoLike) error
+	First() (*model.VideoLike, error)
+	Take() (*model.VideoLike, error)
+	Last() (*model.VideoLike, error)
+	Find() ([]*model.VideoLike, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.VideoLike, err error)
+	FindInBatches(result *[]*model.VideoLike, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Pluck(column field.Expr, dest interface{}) error
+	Delete(...*model.VideoLike) (info gen.ResultInfo, err error)
+	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	Updates(value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumn(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumnSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	UpdateColumns(value interface{}) (info gen.ResultInfo, err error)
+	UpdateFrom(q gen.SubQuery) gen.Dao
+	Attrs(attrs ...field.AssignExpr) IVideoLikeDo
+	Assign(attrs ...field.AssignExpr) IVideoLikeDo
+	Joins(fields ...field.RelationField) IVideoLikeDo
+	Preload(fields ...field.RelationField) IVideoLikeDo
+	FirstOrInit() (*model.VideoLike, error)
+	FirstOrCreate() (*model.VideoLike, error)
+	FindByPage(offset int, limit int) (result []*model.VideoLike, count int64, err error)
+	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
+	Scan(result interface{}) (err error)
+	Returning(value interface{}, columns ...string) IVideoLikeDo
+	UnderlyingDB() *gorm.DB
+	schema.Tabler
+}
+
+func (v videoLikeDo) Debug() IVideoLikeDo {
 	return v.withDO(v.DO.Debug())
 }
 
-func (v videoLikeDo) WithContext(ctx context.Context) *videoLikeDo {
+func (v videoLikeDo) WithContext(ctx context.Context) IVideoLikeDo {
 	return v.withDO(v.DO.WithContext(ctx))
 }
 
-func (v videoLikeDo) ReadDB() *videoLikeDo {
+func (v videoLikeDo) ReadDB() IVideoLikeDo {
 	return v.Clauses(dbresolver.Read)
 }
 
-func (v videoLikeDo) WriteDB() *videoLikeDo {
+func (v videoLikeDo) WriteDB() IVideoLikeDo {
 	return v.Clauses(dbresolver.Write)
 }
 
-func (v videoLikeDo) Session(config *gorm.Session) *videoLikeDo {
+func (v videoLikeDo) Session(config *gorm.Session) IVideoLikeDo {
 	return v.withDO(v.DO.Session(config))
 }
 
-func (v videoLikeDo) Clauses(conds ...clause.Expression) *videoLikeDo {
+func (v videoLikeDo) Clauses(conds ...clause.Expression) IVideoLikeDo {
 	return v.withDO(v.DO.Clauses(conds...))
 }
 
-func (v videoLikeDo) Returning(value interface{}, columns ...string) *videoLikeDo {
+func (v videoLikeDo) Returning(value interface{}, columns ...string) IVideoLikeDo {
 	return v.withDO(v.DO.Returning(value, columns...))
 }
 
-func (v videoLikeDo) Not(conds ...gen.Condition) *videoLikeDo {
+func (v videoLikeDo) Not(conds ...gen.Condition) IVideoLikeDo {
 	return v.withDO(v.DO.Not(conds...))
 }
 
-func (v videoLikeDo) Or(conds ...gen.Condition) *videoLikeDo {
+func (v videoLikeDo) Or(conds ...gen.Condition) IVideoLikeDo {
 	return v.withDO(v.DO.Or(conds...))
 }
 
-func (v videoLikeDo) Select(conds ...field.Expr) *videoLikeDo {
+func (v videoLikeDo) Select(conds ...field.Expr) IVideoLikeDo {
 	return v.withDO(v.DO.Select(conds...))
 }
 
-func (v videoLikeDo) Where(conds ...gen.Condition) *videoLikeDo {
+func (v videoLikeDo) Where(conds ...gen.Condition) IVideoLikeDo {
 	return v.withDO(v.DO.Where(conds...))
 }
 
-func (v videoLikeDo) Order(conds ...field.Expr) *videoLikeDo {
+func (v videoLikeDo) Order(conds ...field.Expr) IVideoLikeDo {
 	return v.withDO(v.DO.Order(conds...))
 }
 
-func (v videoLikeDo) Distinct(cols ...field.Expr) *videoLikeDo {
+func (v videoLikeDo) Distinct(cols ...field.Expr) IVideoLikeDo {
 	return v.withDO(v.DO.Distinct(cols...))
 }
 
-func (v videoLikeDo) Omit(cols ...field.Expr) *videoLikeDo {
+func (v videoLikeDo) Omit(cols ...field.Expr) IVideoLikeDo {
 	return v.withDO(v.DO.Omit(cols...))
 }
 
-func (v videoLikeDo) Join(table schema.Tabler, on ...field.Expr) *videoLikeDo {
+func (v videoLikeDo) Join(table schema.Tabler, on ...field.Expr) IVideoLikeDo {
 	return v.withDO(v.DO.Join(table, on...))
 }
 
-func (v videoLikeDo) LeftJoin(table schema.Tabler, on ...field.Expr) *videoLikeDo {
+func (v videoLikeDo) LeftJoin(table schema.Tabler, on ...field.Expr) IVideoLikeDo {
 	return v.withDO(v.DO.LeftJoin(table, on...))
 }
 
-func (v videoLikeDo) RightJoin(table schema.Tabler, on ...field.Expr) *videoLikeDo {
+func (v videoLikeDo) RightJoin(table schema.Tabler, on ...field.Expr) IVideoLikeDo {
 	return v.withDO(v.DO.RightJoin(table, on...))
 }
 
-func (v videoLikeDo) Group(cols ...field.Expr) *videoLikeDo {
+func (v videoLikeDo) Group(cols ...field.Expr) IVideoLikeDo {
 	return v.withDO(v.DO.Group(cols...))
 }
 
-func (v videoLikeDo) Having(conds ...gen.Condition) *videoLikeDo {
+func (v videoLikeDo) Having(conds ...gen.Condition) IVideoLikeDo {
 	return v.withDO(v.DO.Having(conds...))
 }
 
-func (v videoLikeDo) Limit(limit int) *videoLikeDo {
+func (v videoLikeDo) Limit(limit int) IVideoLikeDo {
 	return v.withDO(v.DO.Limit(limit))
 }
 
-func (v videoLikeDo) Offset(offset int) *videoLikeDo {
+func (v videoLikeDo) Offset(offset int) IVideoLikeDo {
 	return v.withDO(v.DO.Offset(offset))
 }
 
-func (v videoLikeDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *videoLikeDo {
+func (v videoLikeDo) Scopes(funcs ...func(gen.Dao) gen.Dao) IVideoLikeDo {
 	return v.withDO(v.DO.Scopes(funcs...))
 }
 
-func (v videoLikeDo) Unscoped() *videoLikeDo {
+func (v videoLikeDo) Unscoped() IVideoLikeDo {
 	return v.withDO(v.DO.Unscoped())
 }
 
@@ -259,22 +311,22 @@ func (v videoLikeDo) FindInBatches(result *[]*model.VideoLike, batchSize int, fc
 	return v.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (v videoLikeDo) Attrs(attrs ...field.AssignExpr) *videoLikeDo {
+func (v videoLikeDo) Attrs(attrs ...field.AssignExpr) IVideoLikeDo {
 	return v.withDO(v.DO.Attrs(attrs...))
 }
 
-func (v videoLikeDo) Assign(attrs ...field.AssignExpr) *videoLikeDo {
+func (v videoLikeDo) Assign(attrs ...field.AssignExpr) IVideoLikeDo {
 	return v.withDO(v.DO.Assign(attrs...))
 }
 
-func (v videoLikeDo) Joins(fields ...field.RelationField) *videoLikeDo {
+func (v videoLikeDo) Joins(fields ...field.RelationField) IVideoLikeDo {
 	for _, _f := range fields {
 		v = *v.withDO(v.DO.Joins(_f))
 	}
 	return &v
 }
 
-func (v videoLikeDo) Preload(fields ...field.RelationField) *videoLikeDo {
+func (v videoLikeDo) Preload(fields ...field.RelationField) IVideoLikeDo {
 	for _, _f := range fields {
 		v = *v.withDO(v.DO.Preload(_f))
 	}

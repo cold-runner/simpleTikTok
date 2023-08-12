@@ -8,15 +8,15 @@ import (
 	"time"
 )
 
-const TableNameComment = "message"
+const TableNameComment = "comment"
 
-// Comment mapped from table <message>
+// Comment mapped from table <comment>
 type Comment struct {
-	ID        int32     `gorm:"column:id;primaryKey" json:"id"`
-	UserID    int32     `gorm:"column:user_id" json:"user_id"`
-	Content   string    `gorm:"column:content" json:"content"`
-	CreatedAt time.Time `gorm:"column:created_at" json:"created_at"`
-	VedioID   int32     `gorm:"column:vedio_id" json:"vedio_id"`
+	ID        int64     `gorm:"column:id;type:int;primaryKey" json:"id,string"`
+	UserID    int64     `gorm:"column:user_id;type:int" json:"user_id"`
+	Content   string    `gorm:"column:content;type:text" json:"content"`
+	CreatedAt time.Time `gorm:"column:created_at;type:timestamp" json:"created_at"`
+	VedioID   int64     `gorm:"column:vedio_id;type:int" json:"vedio_id"`
 }
 
 // TableName Comment's table name

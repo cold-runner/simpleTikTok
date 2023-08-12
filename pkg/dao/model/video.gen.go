@@ -12,14 +12,14 @@ const TableNameVideo = "video"
 
 // Video mapped from table <video>
 type Video struct {
-	ID            int32     `gorm:"column:id;primaryKey" json:"id"`
-	UserID        int32     `gorm:"column:user_id" json:"user_id"`
-	PlayURL       string    `gorm:"column:play_url" json:"play_url"`
-	CoverURL      string    `gorm:"column:cover_url" json:"cover_url"`
-	Title         string    `gorm:"column:title" json:"title"`
-	CreatedAt     time.Time `gorm:"column:created_at" json:"created_at"`
-	FavoriteCount int64     `gorm:"column:favorite_count" json:"favorite_count"`
-	CommentCount  int64     `gorm:"column:comment_count" json:"comment_count"`
+	ID            int64     `gorm:"column:id;type:int;primaryKey" json:"id,string"`
+	UserID        int64     `gorm:"column:user_id;type:int" json:"user_id"`
+	PlayURL       string    `gorm:"column:play_url;type:varchar(255)" json:"play_url"`
+	CoverURL      string    `gorm:"column:cover_url;type:varchar(255)" json:"cover_url"`
+	Title         string    `gorm:"column:title;type:varchar(255)" json:"title"`
+	CreatedAt     time.Time `gorm:"column:created_at;type:timestamp" json:"created_at"`
+	FavoriteCount int64     `gorm:"column:favorite_count;type:bigint" json:"favorite_count"`
+	CommentCount  int64     `gorm:"column:comment_count;type:bigint" json:"comment_count"`
 }
 
 // TableName Video's table name

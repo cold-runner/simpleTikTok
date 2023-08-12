@@ -1,6 +1,7 @@
 package log
 
 import (
+	"github.com/spf13/viper"
 	"os"
 	"path/filepath"
 	"strings"
@@ -38,8 +39,10 @@ var (
 )
 
 // Init 使用指定的选项初始化 Logger.
-func Init(opts *Options) {
+func Init(optName string) {
 	mu.Lock()
+	opts := logOptions(optName)
+
 	defer mu.Unlock()
 
 	std = NewLogger(opts)
@@ -121,6 +124,27 @@ func figurePath(outputPaths []string) ([]string, error) {
 	}
 
 	return outputPaths, nil
+}
+
+// 传入的是一个字符串切片用于指定配置名，返回一个Options结构体，用于初始化log
+func logOptions(logOpt string) *Options {
+	if logOpt != "" {
+		return &Options{
+			DisableCaller: viper.GetBool(logOpt +
+				".disable-caller"),
+			DisableStacktrace: viper.GetBool(logOpt + ".disable-stacktrace"),
+			Level:             viper.GetString(logOpt + ".level"),
+			Format:            viper.GetString(logOpt + ".format"),
+			OutputPaths:       viper.GetStringSlice(logOpt + ".output-paths"),
+		}
+	}
+	return &Options{
+		DisableCaller:     viper.GetBool("log-default.disable-caller"),
+		DisableStacktrace: viper.GetBool("log-default.disable-stacktrace"),
+		Level:             viper.GetString("log-default.level"),
+		Format:            viper.GetString("log-default.format"),
+		OutputPaths:       viper.GetStringSlice("log-default.output-paths"),
+	}
 }
 
 // Sync 调用底层 zap.Logger 的 Sync 方法，将缓存中的日志刷新到磁盘文件中. 主程序需要在退出前调用 Sync.
