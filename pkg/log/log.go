@@ -1,12 +1,18 @@
 package log
 
 import (
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
+	"github.com/spf13/viper"
+	"os"
+	"path/filepath"
+	"strings"
 	"sync"
 	"time"
+
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
+// Logger 定义了 miniblog 项目的日志接口. 该接口只包含了支持的日志记录方法.
 type Logger interface {
 	Debugw(msg string, keysAndValues ...interface{})
 	Infow(msg string, keysAndValues ...interface{})
@@ -17,23 +23,32 @@ type Logger interface {
 	Sync()
 }
 
+// zapLogger 是 Logger 接口的具体实现. 它底层封装了 zap.Logger.
 type zapLogger struct {
 	z *zap.Logger
 }
 
+// 确保 zapLogger 实现了 Logger 接口. 以下变量赋值，可以使错误在编译期被发现.
+var _ Logger = &zapLogger{}
+
 var (
 	mu sync.Mutex
 
+	// std 定义了默认的全局 Logger.
 	std = NewLogger(NewOptions())
 )
 
-func Init(opts *Options) {
+// Init 使用指定的选项初始化 Logger.
+func Init(optName string) {
 	mu.Lock()
+	opts := logOptions(optName)
+
 	defer mu.Unlock()
 
 	std = NewLogger(opts)
 }
 
+// NewLogger 根据传入的 opts 创建 Logger.
 func NewLogger(opts *Options) *zapLogger {
 	if opts == nil {
 		opts = NewOptions()
@@ -61,10 +76,13 @@ func NewLogger(opts *Options) *zapLogger {
 	encoderConfig.EncodeDuration = func(d time.Duration, enc zapcore.PrimitiveArrayEncoder) {
 		enc.AppendFloat64(float64(d) / float64(time.Millisecond))
 	}
-
+	outputPath, err := figurePath(opts.OutputPaths)
+	if err != nil {
+		panic(err)
+	}
 	// 创建构建 zap.Logger 需要的配置
 	cfg := &zap.Config{
-		// 是否在日志中显示调用日志所在的文件和行号，例如：`"caller":"Tiktok/xxxx.go:75"`
+		// 是否在日志中显示调用日志所在的文件和行号，例如：`"caller":"tiktok/xxx.go:75"`
 		DisableCaller: opts.DisableCaller,
 		// 是否禁止在 panic 及以上级别打印堆栈信息
 		DisableStacktrace: opts.DisableStacktrace,
@@ -74,7 +92,7 @@ func NewLogger(opts *Options) *zapLogger {
 		Encoding:      opts.Format,
 		EncoderConfig: encoderConfig,
 		// 指定日志输出位置
-		OutputPaths: opts.OutputPaths,
+		OutputPaths: outputPath,
 		// 设置 zap 内部错误输出位置
 		ErrorOutputPaths: []string{"stderr"},
 	}
@@ -92,6 +110,44 @@ func NewLogger(opts *Options) *zapLogger {
 	return logger
 }
 
+// 处理目录路径，如果指定的路径中包含了目录，则将目录路径转换为绝对路径
+func figurePath(outputPaths []string) ([]string, error) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+
+	for i, path := range outputPaths {
+		if strings.Contains(path, "/") {
+			outputPaths[i] = filepath.Join(cwd, path)
+		}
+	}
+
+	return outputPaths, nil
+}
+
+// 传入的是一个字符串切片用于指定配置名，返回一个Options结构体，用于初始化log
+func logOptions(logOpt string) *Options {
+	if logOpt != "" {
+		return &Options{
+			DisableCaller: viper.GetBool(logOpt +
+				".disable-caller"),
+			DisableStacktrace: viper.GetBool(logOpt + ".disable-stacktrace"),
+			Level:             viper.GetString(logOpt + ".level"),
+			Format:            viper.GetString(logOpt + ".format"),
+			OutputPaths:       viper.GetStringSlice(logOpt + ".output-paths"),
+		}
+	}
+	return &Options{
+		DisableCaller:     viper.GetBool("log-default.disable-caller"),
+		DisableStacktrace: viper.GetBool("log-default.disable-stacktrace"),
+		Level:             viper.GetString("log-default.level"),
+		Format:            viper.GetString("log-default.format"),
+		OutputPaths:       viper.GetStringSlice("log-default.output-paths"),
+	}
+}
+
+// Sync 调用底层 zap.Logger 的 Sync 方法，将缓存中的日志刷新到磁盘文件中. 主程序需要在退出前调用 Sync.
 func Sync() { std.Sync() }
 
 func (l *zapLogger) Sync() {
