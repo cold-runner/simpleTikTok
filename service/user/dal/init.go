@@ -1,4 +1,4 @@
-package main
+package dal
 
 import (
 	"github.com/cold-runner/simpleTikTok/pkg/config"

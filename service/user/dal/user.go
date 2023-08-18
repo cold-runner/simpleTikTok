@@ -1,4 +1,4 @@
-package main
+package dal
 
 import (
 	"context"
@@ -11,7 +11,7 @@ func CreateUser(ctx context.Context, user []*model.User) error {
 }
 
 // QueryUserByUserName query list of user info
-func QueryUserByUserName(ctx context.Context,
+func GetUserByUserName(ctx context.Context,
 	userName string) ([]*model.User, error) {
 	res := make([]*model.User, 0)
 	if err := DB.WithContext(ctx).Where("username =?", userName).Find(&res).Error; err != nil {

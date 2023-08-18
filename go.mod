@@ -8,10 +8,10 @@ require (
 	github.com/cloudwego/fastpb v0.0.4
 	github.com/cloudwego/hertz v0.6.7
 	github.com/cloudwego/kitex v0.6.2
-	github.com/marmotedu/errors v1.0.2
-	github.com/novalagung/gubrak v1.0.0
+	github.com/hertz-contrib/jwt v1.0.2
 	github.com/spf13/viper v1.16.0
 	go.uber.org/zap v1.25.0
+	golang.org/x/crypto v0.9.0
 	google.golang.org/protobuf v1.31.0
 	gorm.io/driver/mysql v1.5.1
 	gorm.io/gen v0.3.23
@@ -34,6 +34,7 @@ require (
 	github.com/cloudwego/thriftgo v0.2.11 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
+	github.com/golang-jwt/jwt/v4 v4.4.1 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/pprof v0.0.0-20220608213341-c488b8fa1db3 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect

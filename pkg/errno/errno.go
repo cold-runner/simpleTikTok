@@ -9,18 +9,20 @@ type Errno struct {
 	Message string
 }
 
-// Error 实现 errno 接口中的 `Error` 方法.
+// Error 返回了错误信息.
 func (err *Errno) Error() string {
 	return err.Message
 }
 
-// SetMessage 设置 Errno 类型错误中的 Message 字段.
+// SetMessage 设置错误信息.
+// Example: errno.ErrInvalidParameter.SetMessage("username is empty")
 func (err *Errno) SetMessage(format string, args ...interface{}) *Errno {
 	err.Message = fmt.Sprintf(format, args...)
 	return err
 }
 
-// Decode 尝试从 err 中解析出业务错误码和错误信息.
+// Decode 根据参数 err 解析其中的错误信息.
+// Example: httpCode, errCode, errMsg := errno.Decode(err)
 func Decode(err error) (int, string, string) {
 	if err == nil {
 		return OK.HTTP, OK.Code, OK.Message
