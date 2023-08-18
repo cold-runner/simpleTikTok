@@ -9,7 +9,7 @@ type Errno struct {
 	Message string
 }
 
-// Error 实现 errorn 接口中的 `Error` 方法.
+// Error 实现 error 接口中的 `Error` 方法.
 func (err *Errno) Error() string {
 	return err.Message
 }
