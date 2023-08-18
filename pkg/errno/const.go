@@ -1,4 +1,4 @@
-package error
+package errorn
 
 const (
 	ErrSuccess = iota + 100001
