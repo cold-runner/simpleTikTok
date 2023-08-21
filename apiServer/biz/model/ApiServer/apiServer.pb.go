@@ -2766,7 +2766,7 @@ var file_apiServer_proto_depIdxs = []int32{
 	15, // 33: ApiServer.ApiService.PublishList:input_type -> ApiServer.DouyinPublishListRequest
 	17, // 34: ApiServer.ApiService.FavoriteAction:input_type -> ApiServer.DouyinFavoriteActionRequest
 	19, // 35: ApiServer.ApiService.FavoriteList:input_type -> ApiServer.DouyinFavoriteListRequest
-	21, // 36: ApiServer.ApiService.CommentAction:input_type -> ApiServer.DouyinCommentActionRequest
+	21, // 36: ApiServer.ApiService.CreateComment:input_type -> ApiServer.DouyinCommentActionRequest
 	23, // 37: ApiServer.ApiService.CommentList:input_type -> ApiServer.DouyinCommentListRequest
 	25, // 38: ApiServer.ApiService.RelationAction:input_type -> ApiServer.DouyinRelationActionRequest
 	27, // 39: ApiServer.ApiService.RelationFollowList:input_type -> ApiServer.DouyinRelationFollowListRequest
@@ -2782,7 +2782,7 @@ var file_apiServer_proto_depIdxs = []int32{
 	16, // 49: ApiServer.ApiService.PublishList:output_type -> ApiServer.DouyinPublishListResponse
 	18, // 50: ApiServer.ApiService.FavoriteAction:output_type -> ApiServer.DouyinFavoriteActionResponse
 	18, // 51: ApiServer.ApiService.FavoriteList:output_type -> ApiServer.DouyinFavoriteActionResponse
-	22, // 52: ApiServer.ApiService.CommentAction:output_type -> ApiServer.DouyinCommentActionResponse
+	22, // 52: ApiServer.ApiService.CreateComment:output_type -> ApiServer.DouyinCommentActionResponse
 	24, // 53: ApiServer.ApiService.CommentList:output_type -> ApiServer.DouyinCommentListResponse
 	26, // 54: ApiServer.ApiService.RelationAction:output_type -> ApiServer.DouyinRelationActionResponse
 	28, // 55: ApiServer.ApiService.RelationFollowList:output_type -> ApiServer.DouyinRelationFollowListResponse

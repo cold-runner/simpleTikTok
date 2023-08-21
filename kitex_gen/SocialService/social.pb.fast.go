@@ -103,7 +103,7 @@ func (x *Video) fastReadField6(buf []byte, _type int8) (offset int, err error) {
 }
 
 func (x *Video) fastReadField7(buf []byte, _type int8) (offset int, err error) {
-	x.IsFavorite, offset, err = fastpb.ReadBool(buf, _type)
+	x.IsLike, offset, err = fastpb.ReadBool(buf, _type)
 	return offset, err
 }
 
@@ -282,7 +282,7 @@ func (x *BaseResp) fastReadField2(buf []byte, _type int8) (offset int, err error
 	return offset, err
 }
 
-func (x *FavoriteActionRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+func (x *LikeActionRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
 		offset, err = x.fastReadField1(buf, _type)
@@ -309,25 +309,25 @@ func (x *FavoriteActionRequest) FastRead(buf []byte, _type int8, number int32) (
 SkipFieldError:
 	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
 ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_FavoriteActionRequest[number], err)
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_LikeActionRequest[number], err)
 }
 
-func (x *FavoriteActionRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+func (x *LikeActionRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
 	x.UserId, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
-func (x *FavoriteActionRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+func (x *LikeActionRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
 	x.VideoId, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
-func (x *FavoriteActionRequest) fastReadField3(buf []byte, _type int8) (offset int, err error) {
+func (x *LikeActionRequest) fastReadField3(buf []byte, _type int8) (offset int, err error) {
 	x.ActionType, offset, err = fastpb.ReadInt32(buf, _type)
 	return offset, err
 }
 
-func (x *FavoriteActionResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+func (x *LikeActionResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
 		offset, err = x.fastReadField1(buf, _type)
@@ -344,10 +344,10 @@ func (x *FavoriteActionResponse) FastRead(buf []byte, _type int8, number int32) 
 SkipFieldError:
 	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
 ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_FavoriteActionResponse[number], err)
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_LikeActionResponse[number], err)
 }
 
-func (x *FavoriteActionResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+func (x *LikeActionResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
 	var v BaseResp
 	offset, err = fastpb.ReadMessage(buf, _type, &v)
 	if err != nil {
@@ -357,7 +357,7 @@ func (x *FavoriteActionResponse) fastReadField1(buf []byte, _type int8) (offset 
 	return offset, nil
 }
 
-func (x *FavoriteListRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+func (x *LikeListRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
 		offset, err = x.fastReadField1(buf, _type)
@@ -374,15 +374,15 @@ func (x *FavoriteListRequest) FastRead(buf []byte, _type int8, number int32) (of
 SkipFieldError:
 	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
 ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_FavoriteListRequest[number], err)
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_LikeListRequest[number], err)
 }
 
-func (x *FavoriteListRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+func (x *LikeListRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
 	x.UserId, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
-func (x *FavoriteListResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+func (x *LikeListResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
 		offset, err = x.fastReadField1(buf, _type)
@@ -404,10 +404,10 @@ func (x *FavoriteListResponse) FastRead(buf []byte, _type int8, number int32) (o
 SkipFieldError:
 	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
 ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_FavoriteListResponse[number], err)
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_LikeListResponse[number], err)
 }
 
-func (x *FavoriteListResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+func (x *LikeListResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
 	var v BaseResp
 	offset, err = fastpb.ReadMessage(buf, _type, &v)
 	if err != nil {
@@ -417,7 +417,7 @@ func (x *FavoriteListResponse) fastReadField1(buf []byte, _type int8) (offset in
 	return offset, nil
 }
 
-func (x *FavoriteListResponse) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+func (x *LikeListResponse) fastReadField2(buf []byte, _type int8) (offset int, err error) {
 	var v Video
 	offset, err = fastpb.ReadMessage(buf, _type, &v)
 	if err != nil {
@@ -671,10 +671,10 @@ func (x *Video) fastWriteField6(buf []byte) (offset int) {
 }
 
 func (x *Video) fastWriteField7(buf []byte) (offset int) {
-	if !x.IsFavorite {
+	if !x.IsLike {
 		return offset
 	}
-	offset += fastpb.WriteBool(buf[offset:], 7, x.GetIsFavorite())
+	offset += fastpb.WriteBool(buf[offset:], 7, x.GetIsLike())
 	return offset
 }
 
@@ -815,7 +815,7 @@ func (x *BaseResp) fastWriteField2(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *FavoriteActionRequest) FastWrite(buf []byte) (offset int) {
+func (x *LikeActionRequest) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
 	}
@@ -825,7 +825,7 @@ func (x *FavoriteActionRequest) FastWrite(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *FavoriteActionRequest) fastWriteField1(buf []byte) (offset int) {
+func (x *LikeActionRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.UserId == 0 {
 		return offset
 	}
@@ -833,7 +833,7 @@ func (x *FavoriteActionRequest) fastWriteField1(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *FavoriteActionRequest) fastWriteField2(buf []byte) (offset int) {
+func (x *LikeActionRequest) fastWriteField2(buf []byte) (offset int) {
 	if x.VideoId == 0 {
 		return offset
 	}
@@ -841,7 +841,7 @@ func (x *FavoriteActionRequest) fastWriteField2(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *FavoriteActionRequest) fastWriteField3(buf []byte) (offset int) {
+func (x *LikeActionRequest) fastWriteField3(buf []byte) (offset int) {
 	if x.ActionType == 0 {
 		return offset
 	}
@@ -849,7 +849,7 @@ func (x *FavoriteActionRequest) fastWriteField3(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *FavoriteActionResponse) FastWrite(buf []byte) (offset int) {
+func (x *LikeActionResponse) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
 	}
@@ -857,7 +857,7 @@ func (x *FavoriteActionResponse) FastWrite(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *FavoriteActionResponse) fastWriteField1(buf []byte) (offset int) {
+func (x *LikeActionResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
@@ -865,7 +865,7 @@ func (x *FavoriteActionResponse) fastWriteField1(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *FavoriteListRequest) FastWrite(buf []byte) (offset int) {
+func (x *LikeListRequest) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
 	}
@@ -873,7 +873,7 @@ func (x *FavoriteListRequest) FastWrite(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *FavoriteListRequest) fastWriteField1(buf []byte) (offset int) {
+func (x *LikeListRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.UserId == 0 {
 		return offset
 	}
@@ -881,7 +881,7 @@ func (x *FavoriteListRequest) fastWriteField1(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *FavoriteListResponse) FastWrite(buf []byte) (offset int) {
+func (x *LikeListResponse) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
 	}
@@ -890,7 +890,7 @@ func (x *FavoriteListResponse) FastWrite(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *FavoriteListResponse) fastWriteField1(buf []byte) (offset int) {
+func (x *LikeListResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
@@ -898,7 +898,7 @@ func (x *FavoriteListResponse) fastWriteField1(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *FavoriteListResponse) fastWriteField2(buf []byte) (offset int) {
+func (x *LikeListResponse) fastWriteField2(buf []byte) (offset int) {
 	if x.VideoList == nil {
 		return offset
 	}
@@ -1092,10 +1092,10 @@ func (x *Video) sizeField6() (n int) {
 }
 
 func (x *Video) sizeField7() (n int) {
-	if !x.IsFavorite {
+	if !x.IsLike {
 		return n
 	}
-	n += fastpb.SizeBool(7, x.GetIsFavorite())
+	n += fastpb.SizeBool(7, x.GetIsLike())
 	return n
 }
 
@@ -1236,7 +1236,7 @@ func (x *BaseResp) sizeField2() (n int) {
 	return n
 }
 
-func (x *FavoriteActionRequest) Size() (n int) {
+func (x *LikeActionRequest) Size() (n int) {
 	if x == nil {
 		return n
 	}
@@ -1246,7 +1246,7 @@ func (x *FavoriteActionRequest) Size() (n int) {
 	return n
 }
 
-func (x *FavoriteActionRequest) sizeField1() (n int) {
+func (x *LikeActionRequest) sizeField1() (n int) {
 	if x.UserId == 0 {
 		return n
 	}
@@ -1254,7 +1254,7 @@ func (x *FavoriteActionRequest) sizeField1() (n int) {
 	return n
 }
 
-func (x *FavoriteActionRequest) sizeField2() (n int) {
+func (x *LikeActionRequest) sizeField2() (n int) {
 	if x.VideoId == 0 {
 		return n
 	}
@@ -1262,7 +1262,7 @@ func (x *FavoriteActionRequest) sizeField2() (n int) {
 	return n
 }
 
-func (x *FavoriteActionRequest) sizeField3() (n int) {
+func (x *LikeActionRequest) sizeField3() (n int) {
 	if x.ActionType == 0 {
 		return n
 	}
@@ -1270,7 +1270,7 @@ func (x *FavoriteActionRequest) sizeField3() (n int) {
 	return n
 }
 
-func (x *FavoriteActionResponse) Size() (n int) {
+func (x *LikeActionResponse) Size() (n int) {
 	if x == nil {
 		return n
 	}
@@ -1278,7 +1278,7 @@ func (x *FavoriteActionResponse) Size() (n int) {
 	return n
 }
 
-func (x *FavoriteActionResponse) sizeField1() (n int) {
+func (x *LikeActionResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
@@ -1286,7 +1286,7 @@ func (x *FavoriteActionResponse) sizeField1() (n int) {
 	return n
 }
 
-func (x *FavoriteListRequest) Size() (n int) {
+func (x *LikeListRequest) Size() (n int) {
 	if x == nil {
 		return n
 	}
@@ -1294,7 +1294,7 @@ func (x *FavoriteListRequest) Size() (n int) {
 	return n
 }
 
-func (x *FavoriteListRequest) sizeField1() (n int) {
+func (x *LikeListRequest) sizeField1() (n int) {
 	if x.UserId == 0 {
 		return n
 	}
@@ -1302,7 +1302,7 @@ func (x *FavoriteListRequest) sizeField1() (n int) {
 	return n
 }
 
-func (x *FavoriteListResponse) Size() (n int) {
+func (x *LikeListResponse) Size() (n int) {
 	if x == nil {
 		return n
 	}
@@ -1311,7 +1311,7 @@ func (x *FavoriteListResponse) Size() (n int) {
 	return n
 }
 
-func (x *FavoriteListResponse) sizeField1() (n int) {
+func (x *LikeListResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
@@ -1319,7 +1319,7 @@ func (x *FavoriteListResponse) sizeField1() (n int) {
 	return n
 }
 
-func (x *FavoriteListResponse) sizeField2() (n int) {
+func (x *LikeListResponse) sizeField2() (n int) {
 	if x.VideoList == nil {
 		return n
 	}
@@ -1456,7 +1456,7 @@ var fieldIDToName_Video = map[int32]string{
 	4: "CoverUrl",
 	5: "FavoriteCount",
 	6: "CommentCount",
-	7: "IsFavorite",
+	7: "IsLike",
 	8: "Title",
 }
 
@@ -1481,21 +1481,21 @@ var fieldIDToName_BaseResp = map[int32]string{
 	2: "StatusMsg",
 }
 
-var fieldIDToName_FavoriteActionRequest = map[int32]string{
+var fieldIDToName_LikeActionRequest = map[int32]string{
 	1: "UserId",
 	2: "VideoId",
 	3: "ActionType",
 }
 
-var fieldIDToName_FavoriteActionResponse = map[int32]string{
+var fieldIDToName_LikeActionResponse = map[int32]string{
 	1: "BaseResp",
 }
 
-var fieldIDToName_FavoriteListRequest = map[int32]string{
+var fieldIDToName_LikeListRequest = map[int32]string{
 	1: "UserId",
 }
 
-var fieldIDToName_FavoriteListResponse = map[int32]string{
+var fieldIDToName_LikeListResponse = map[int32]string{
 	1: "BaseResp",
 	2: "VideoList",
 }

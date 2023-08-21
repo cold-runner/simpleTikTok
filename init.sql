@@ -10,13 +10,13 @@ CREATE TABLE `follow` (
 CREATE TABLE `user` (
   `id` integer PRIMARY KEY,
   `username` varchar(32),
-  `password` varchar(32),
+  `password` varchar(34),
   `follow_count` bigint,
   `follower_count` bigint,
   `avatar` varchar(255),
   `background_image` varchar(255),
   `signature` text,
-  `total_favorited` bigint,
+  total_favorite bigint,
   `work_count` bigint,
   `favorite_count` bigint
 );

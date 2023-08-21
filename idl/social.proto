@@ -3,7 +3,7 @@ syntax = "proto3";
 package SocialService;
 
 option go_package = "SocialService";
-
+import public "google/protobuf/timestamp.proto";
 message Video {
   int64 id = 1;
   User author = 2;
@@ -11,7 +11,7 @@ message Video {
   string cover_url = 4;
   int64 favorite_count = 5;
   int64 comment_count = 6; // 视频的评论总数
-  bool is_favorite = 7;
+  bool is_like = 7;
   string title =8;
 }
 
@@ -37,22 +37,22 @@ message BaseResp {
 }
 
 // 点赞/取消赞
-message FavoriteActionRequest {
+message LikeActionRequest {
   int64 user_id = 1; // 用户id
   int64 video_id = 2; // 视频id
   int32 action_type = 3; // 1-点赞，2-取消点赞
 }
 
-message FavoriteActionResponse {
+message LikeActionResponse {
   BaseResp base_resp = 1;
 }
 
 // 获取点赞列表
-message FavoriteListRequest {
+message LikeListRequest {
   int64 user_id = 1; // 用户id
 }
 
-message FavoriteListResponse {
+message LikeListResponse {
   BaseResp base_resp = 1;
   repeated Video video_list = 2; // 视频列表
 }
@@ -84,6 +84,6 @@ message CommentListResponse {
 service SocialService {
   rpc CommentAction  (CommentActionRequest) returns (CommentActionResponse) {}   //评论操作
   rpc CommentList  (CommentListRequest) returns (CommentListResponse) {}  //评论列表查询
-  rpc LikeAction (FavoriteActionRequest) returns (FavoriteActionResponse) {} // 点赞操作
-  rpc LikeList (FavoriteListRequest) returns (FavoriteListResponse) {} // 获取点赞视频列表
+  rpc LikeAction (LikeActionRequest) returns (LikeActionResponse) {} // 点赞操作
+  rpc LikeList (LikeListRequest) returns (LikeListResponse) {} // 获取点赞视频列表
 }

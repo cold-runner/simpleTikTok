@@ -3,31 +3,61 @@ package social
 import (
 	"context"
 	SocialService "github.com/cold-runner/simpleTikTok/kitex_gen/SocialService"
+	"github.com/cold-runner/simpleTikTok/pkg/log"
+	"github.com/cold-runner/simpleTikTok/service/social/pack"
+	"github.com/cold-runner/simpleTikTok/service/social/service"
 )
 
-// SocialServiceImpl implements the last service interface defined in the IDL.
-type SocialServiceImpl struct{}
-
-// CommentAction implements the SocialServiceImpl interface.
-func (s *SocialServiceImpl) CommentAction(ctx context.Context, req *SocialService.CommentActionRequest) (resp *SocialService.CommentActionResponse, err error) {
-
-	return
+// ServiceImpl implements the last service interface defined in the IDL.
+type ServiceImpl struct {
+	ctx context.Context
+	srv service.Srv
 }
 
-// CommentList implements the SocialServiceImpl interface.
-func (s *SocialServiceImpl) CommentList(ctx context.Context, req *SocialService.CommentListRequest) (resp *SocialService.CommentListResponse, err error) {
-	// TODO: Your code here...
-	return
+func NewServiceImpl(ctx context.Context, srv service.Srv) *ServiceImpl {
+	return &ServiceImpl{
+		ctx: ctx,
+		srv: srv,
+	}
 }
 
-// LikeAction implements the SocialServiceImpl interface.
-func (s *SocialServiceImpl) LikeAction(ctx context.Context, req *SocialService.FavoriteActionRequest) (resp *SocialService.FavoriteActionResponse, err error) {
-	// TODO: Your code here...
-	return
+// CommentAction implements the ServiceImpl interface.
+func (s *ServiceImpl) CommentAction(ctx context.Context, req *SocialService.CommentActionRequest) (*SocialService.CommentActionResponse, error) {
+	comment, err := s.srv.CommentAction(ctx, req)
+	if err != nil {
+		// TODO VLOG?
+		log.Errorw("评论操作失败！err: %v", err)
+		return pack.BuildCommentActionResp(err, nil), nil
+	}
+	return pack.BuildCommentActionResp(nil, comment), nil
 }
 
-// LikeList implements the SocialServiceImpl interface.
-func (s *SocialServiceImpl) LikeList(ctx context.Context, req *SocialService.FavoriteListRequest) (resp *SocialService.FavoriteListResponse, err error) {
-	// TODO: Your code here...
-	return
+// CommentList implements the ServiceImpl interface.
+func (s *ServiceImpl) CommentList(ctx context.Context, req *SocialService.CommentListRequest) (*SocialService.CommentListResponse, error) {
+	commentList, err := s.srv.CommentList(ctx, req)
+	if err != nil {
+		log.Errorw("获取评论列表失败！err: %v", err)
+		return pack.BuildCommentListResp(err, commentList), nil
+	}
+	return pack.BuildCommentListResp(nil, commentList), nil
+}
+
+// LikeAction implements the ServiceImpl interface.
+func (s *ServiceImpl) LikeAction(ctx context.Context, req *SocialService.LikeActionRequest) (*SocialService.LikeActionResponse, error) {
+	err := s.srv.LikeAction(ctx, req)
+	if err != nil {
+		log.Errorw("点赞/取消点赞失败！err: %v", err)
+		return pack.BuildLikeResp(err), nil
+	}
+	return pack.BuildLikeResp(err), nil
+}
+
+// LikeList implements the ServiceImpl interface.
+func (s *ServiceImpl) LikeList(ctx context.Context, req *SocialService.LikeListRequest) (*SocialService.LikeListResponse, error) {
+	likeList, err := s.srv.LikeList(ctx, req)
+	if err != nil {
+		log.Errorw("获取点赞列表失败！err: %v", err)
+		return pack.BuildLikeListResp(err, nil), nil
+	}
+	return pack.BuildLikeListResp(err, likeList), nil
 }

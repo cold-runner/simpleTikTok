@@ -1,4 +1,4 @@
-package error
+package errno
 
 import (
 	"github.com/marmotedu/errors"

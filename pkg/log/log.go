@@ -125,7 +125,7 @@ func (l *zapLogger) Warnw(msg string, keysAndValues ...interface{}) {
 	l.z.Sugar().Warnw(msg, keysAndValues...)
 }
 
-// Errorw 输出 error 级别的日志.
+// Errorw 输出 errno 级别的日志.
 func Errorw(msg string, keysAndValues ...interface{}) {
 	std.z.Sugar().Errorw(msg, keysAndValues...)
 }

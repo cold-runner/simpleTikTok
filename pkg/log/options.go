@@ -8,7 +8,7 @@ type Options struct {
 	DisableCaller bool
 	// 是否禁止在 panic 及以上级别打印堆栈信息
 	DisableStacktrace bool
-	// 指定日志级别，可选值：debug, info, warn, error, dpanic, panic, fatal
+	// 指定日志级别，可选值：debug, info, warn, errno, dpanic, panic, fatal
 	Level string
 	// 指定日志显示格式，可选值：console, json (console 为普通文本格式)
 	Format string
