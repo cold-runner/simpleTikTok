@@ -4,7 +4,7 @@ package ApiServer
 
 import (
 	"github.com/cloudwego/hertz/pkg/app/server"
-	ApiServer "hz-demo/biz/handler/ApiServer"
+	ApiServer "github.com/cold-runner/simpleTikTok/apiServer/biz/handler/ApiServer"
 )
 
 /*
