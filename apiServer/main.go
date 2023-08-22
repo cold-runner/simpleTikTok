@@ -4,12 +4,11 @@ package main
 
 import (
 	"github.com/cloudwego/hertz/pkg/app/server"
-	"github.com/cold-runner/simpleTikTok/apiServer"
 )
 
 func main() {
-	h := server.Default(server.WithExitWaitTime(0))
+	h := server.Default()
 
-	apiServer.Register(h)
+	register(h)
 	h.Spin()
 }
