@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 // 初始化viper配置
@@ -14,8 +15,15 @@ func InitViperConfig() {
 	if err != nil {
 		log.Fatalw("Failed to get working directory:", "err", err)
 	}
-	// 设置配置文件的路径
-	configPath := filepath.Join(projectRoot, "config", "config.yaml")
+
+	// 查找 "simpleTikTok" 目录，并截取该路径
+	index := strings.Index(projectRoot, "simpleTikTok")
+	if index == -1 {
+		log.Fatalw("Cannot find 'simpleTikTok' directory in path")
+	}
+
+	// 构造配置文件的路径
+	configPath := filepath.Join(projectRoot[:index+len("simpleTikTok")], "config", "config.yaml")
 	log.Infow("Reading configuration file at:", "path", configPath)
 	// 设置viper相关配置
 	viper.SetConfigFile(configPath)

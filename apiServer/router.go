@@ -4,7 +4,7 @@ package main
 
 import (
 	"github.com/cloudwego/hertz/pkg/app/server"
-	handler "hz-demo/biz/handler"
+	handler "github.com/cold-runner/simpleTikTok/apiServer/biz/handler"
 )
 
 // customizeRegister registers customize routers.

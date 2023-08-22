@@ -21,6 +21,7 @@ message User {
   int64 favorite_count = 11;
 }
 
+// 用户注册
 message UserRegisterRequest {
   string username = 1;
   string password = 2;
@@ -31,6 +32,19 @@ message UserRegisterResponse {
   int64 id = 2;
 }
 
+// 用户登录
+message UserLoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message UserLoginResponse {
+  BaseResp base_resp = 1;
+  int64 id = 2;
+}
+
+
 service UserService {
   rpc Register(UserRegisterRequest) returns (UserRegisterResponse) {}
+  rpc Login(UserLoginRequest) returns (UserLoginResponse) {}
 }

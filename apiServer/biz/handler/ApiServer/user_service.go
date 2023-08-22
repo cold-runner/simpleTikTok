@@ -47,17 +47,7 @@ func Register(ctx context.Context, c *app.RequestContext) {
 // Login .
 // @router /douyin/user/login/ [POST]
 func Login(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req ApiServer.UserLoginRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(ApiServer.UserLoginResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	mw.JwtMiddleware.LoginHandler(ctx, c)
 }
 
 // GetUserInfo .

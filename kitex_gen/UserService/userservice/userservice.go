@@ -23,6 +23,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	handlerType := (*UserService.UserService)(nil)
 	methods := map[string]kitex.MethodInfo{
 		"Register": kitex.NewMethodInfo(registerHandler, newRegisterArgs, newRegisterResult, false),
+		"Login":    kitex.NewMethodInfo(loginHandler, newLoginArgs, newLoginResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "user",
@@ -191,6 +192,159 @@ func (p *RegisterResult) GetResult() interface{} {
 	return p.Success
 }
 
+func loginHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(UserService.UserLoginRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(UserService.UserService).Login(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *LoginArgs:
+		success, err := handler.(UserService.UserService).Login(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*LoginResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newLoginArgs() interface{} {
+	return &LoginArgs{}
+}
+
+func newLoginResult() interface{} {
+	return &LoginResult{}
+}
+
+type LoginArgs struct {
+	Req *UserService.UserLoginRequest
+}
+
+func (p *LoginArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(UserService.UserLoginRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *LoginArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *LoginArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *LoginArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in LoginArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *LoginArgs) Unmarshal(in []byte) error {
+	msg := new(UserService.UserLoginRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var LoginArgs_Req_DEFAULT *UserService.UserLoginRequest
+
+func (p *LoginArgs) GetReq() *UserService.UserLoginRequest {
+	if !p.IsSetReq() {
+		return LoginArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *LoginArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *LoginArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type LoginResult struct {
+	Success *UserService.UserLoginResponse
+}
+
+var LoginResult_Success_DEFAULT *UserService.UserLoginResponse
+
+func (p *LoginResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(UserService.UserLoginResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *LoginResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *LoginResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *LoginResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in LoginResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *LoginResult) Unmarshal(in []byte) error {
+	msg := new(UserService.UserLoginResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *LoginResult) GetSuccess() *UserService.UserLoginResponse {
+	if !p.IsSetSuccess() {
+		return LoginResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *LoginResult) SetSuccess(x interface{}) {
+	p.Success = x.(*UserService.UserLoginResponse)
+}
+
+func (p *LoginResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *LoginResult) GetResult() interface{} {
+	return p.Success
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -206,6 +360,16 @@ func (p *kClient) Register(ctx context.Context, Req *UserService.UserRegisterReq
 	_args.Req = Req
 	var _result RegisterResult
 	if err = p.c.Call(ctx, "Register", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) Login(ctx context.Context, Req *UserService.UserLoginRequest) (r *UserService.UserLoginResponse, err error) {
+	var _args LoginArgs
+	_args.Req = Req
+	var _result LoginResult
+	if err = p.c.Call(ctx, "Login", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

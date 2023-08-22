@@ -21,6 +21,21 @@ func _userMw() []app.HandlerFunc {
 	return nil
 }
 
+func _getuserinfoMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _loginMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _login0Mw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
 func _registerMw() []app.HandlerFunc {
 	// your code...
 	return nil

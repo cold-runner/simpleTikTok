@@ -4,7 +4,7 @@ package main
 
 import (
 	"github.com/cloudwego/hertz/pkg/app/server"
-	router "hz-demo/biz/router"
+	router "github.com/cold-runner/simpleTikTok/apiServer/biz/router"
 )
 
 // register registers all routers.

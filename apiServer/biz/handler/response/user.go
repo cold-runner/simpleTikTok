@@ -1,4 +1,4 @@
-package responseUtil
+package response
 
 import (
 	"github.com/cloudwego/hertz/pkg/app"
@@ -16,11 +16,21 @@ type RegisterResponse struct {
 // 发送注册响应报文
 func SendRegisterResponse(c *app.RequestContext, error error, id int64,
 	token string) {
-	err := errno.MatchErr(error)
-	c.JSON(200, RegisterResponse{
-		StatusCode: err.HTTP,
-		StatusMsg:  err.Message,
-		UserId:     id,
-		Token:      token,
-	})
+	if error != nil {
+		err := errno.MatchErr(error)
+		c.JSON(200, RegisterResponse{
+			StatusCode: err.HTTP,
+			StatusMsg:  err.Message,
+			UserId:     id,
+			Token:      token,
+		})
+	} else {
+		c.JSON(200, RegisterResponse{
+			StatusCode: 0,
+			StatusMsg:  "User registration successfully! ",
+			UserId:     id,
+			Token:      token,
+		})
+	}
+
 }
