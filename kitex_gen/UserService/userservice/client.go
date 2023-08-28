@@ -12,6 +12,7 @@ import (
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
 	Register(ctx context.Context, Req *UserService.UserRegisterRequest, callOptions ...callopt.Option) (r *UserService.UserRegisterResponse, err error)
+	Login(ctx context.Context, Req *UserService.UserLoginRequest, callOptions ...callopt.Option) (r *UserService.UserLoginResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -30,7 +31,7 @@ func NewClient(destService string, opts ...client.Option) (Client, error) {
 	}, nil
 }
 
-// MustNewClient creates a client for the service defined in IDL. It panics if any errno occurs.
+// MustNewClient creates a client for the service defined in IDL. It panics if any error occurs.
 func MustNewClient(destService string, opts ...client.Option) Client {
 	kc, err := NewClient(destService, opts...)
 	if err != nil {
@@ -46,4 +47,9 @@ type kUserServiceClient struct {
 func (p *kUserServiceClient) Register(ctx context.Context, Req *UserService.UserRegisterRequest, callOptions ...callopt.Option) (r *UserService.UserRegisterResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.Register(ctx, Req)
+}
+
+func (p *kUserServiceClient) Login(ctx context.Context, Req *UserService.UserLoginRequest, callOptions ...callopt.Option) (r *UserService.UserLoginResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.Login(ctx, Req)
 }

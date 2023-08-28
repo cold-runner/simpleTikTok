@@ -11,7 +11,7 @@ const TableNameUser = "user"
 type User struct {
 	ID              int64  `gorm:"column:id;type:int;primaryKey" json:"id,string"`
 	Username        string `gorm:"column:username;type:varchar(32)" json:"username"`
-	Password        string `gorm:"column:password;type:varchar(32)" json:"password"`
+	Password        string `gorm:"column:password;type:varchar(255)" json:"password"`
 	FollowCount     int64  `gorm:"column:follow_count;type:bigint" json:"follow_count"`
 	FollowerCount   int64  `gorm:"column:follower_count;type:bigint" json:"follower_count"`
 	Avatar          string `gorm:"column:avatar;type:varchar(255)" json:"avatar"`

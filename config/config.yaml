@@ -28,3 +28,11 @@ db-user:
   max-open-connections: 100 # MySQL 最大打开的连接数，默认 100
   max-connection-life-time: 10s # 空闲连接最大存活时间，默认 10s
   log-level: 4 # GORM log level, 1: silent, 2:errno, 3:warn, 4:info
+
+# Etcd 相关配置
+etcd:
+  address: localhost:2379
+  api-service-name : ApiService
+  api-service-address: :8888
+  user-service-address: :8101
+  user-service-name: UserService

@@ -2,7 +2,7 @@ package errno
 
 var (
 	// OK 代表请求成功.
-	OK = &Errno{HTTP: 200, Code: "", Message: ""}
+	OK = &Errno{HTTP: 200, Code: "", Message: "Action completed successfully."}
 
 	// InternalServerError 表示所有未知的服务器端错误.
 	InternalServerError = &Errno{HTTP: 500, Code: "InternalError", Message: "Internal server errno."}
@@ -16,7 +16,7 @@ var (
 	// ErrInvalidParameter 表示所有验证失败的错误.
 	ErrInvalidParameter = &Errno{HTTP: 400, Code: "InvalidParameter", Message: "Parameter verification failed."}
 
-	// ErrSignToken 表示签发 JWT Token 时出错.
+	// ErrSignToken 表示签发 JWT Token 时出错
 	ErrSignToken = &Errno{HTTP: 401, Code: "AuthFailure.SignTokenError", Message: "Error occurred while signing the JSON web token."}
 
 	// ErrTokenInvalid 表示 JWT Token 格式错误.
@@ -28,4 +28,10 @@ var (
 	// ErrUserAlredyExist 表示用户已经存在.
 	ErrUserAlredyExist = &Errno{HTTP: 409, Code: "UserConflict.UserAlreadyExist",
 		Message: "User already exist."}
+
+	// ErrUserNotExist 表示用户不存在的错误.
+	ErrUserNotExist = &Errno{HTTP: 404, Code: "UserNotFound", Message: "User does not exist."}
+
+	// ErrUserPassword 表示用户密码错误.
+	ErrUserPassword = &Errno{HTTP: 401, Code: "UserPassword", Message: "User password error."}
 )
