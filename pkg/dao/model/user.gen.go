@@ -19,6 +19,7 @@ type User struct {
 	TotalFavorited  int64  `gorm:"column:total_favorited;type:bigint" json:"total_favorited"`
 	WorkCount       int64  `gorm:"column:work_count;type:bigint" json:"work_count"`
 	FavoriteCount   int64  `gorm:"column:favorite_count;type:bigint" json:"favorite_count"`
+
 }
 
 // TableName User's table name

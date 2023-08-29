@@ -62,9 +62,9 @@ func (x *Video) FastRead(buf []byte, _type int8, number int32) (offset int, err 
 	}
 	return offset, nil
 SkipFieldError:
-	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, errno: %s", x, err)
 ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_Video[number], err)
+	return offset, fmt.Errorf("%T read field %d '%s' errno: %s", x, number, fieldIDToName_Video[number], err)
 }
 
 func (x *Video) fastReadField1(buf []byte, _type int8) (offset int, err error) {
@@ -152,9 +152,9 @@ func (x *User) FastRead(buf []byte, _type int8, number int32) (offset int, err e
 	}
 	return offset, nil
 SkipFieldError:
-	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, errno: %s", x, err)
 ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_User[number], err)
+	return offset, fmt.Errorf("%T read field %d '%s' errno: %s", x, number, fieldIDToName_User[number], err)
 }
 
 func (x *User) fastReadField1(buf []byte, _type int8) (offset int, err error) {
@@ -217,9 +217,9 @@ func (x *Comment) FastRead(buf []byte, _type int8, number int32) (offset int, er
 	}
 	return offset, nil
 SkipFieldError:
-	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, errno: %s", x, err)
 ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_Comment[number], err)
+	return offset, fmt.Errorf("%T read field %d '%s' errno: %s", x, number, fieldIDToName_Comment[number], err)
 }
 
 func (x *Comment) fastReadField1(buf []byte, _type int8) (offset int, err error) {
@@ -267,9 +267,9 @@ func (x *BaseResp) FastRead(buf []byte, _type int8, number int32) (offset int, e
 	}
 	return offset, nil
 SkipFieldError:
-	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, errno: %s", x, err)
 ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_BaseResp[number], err)
+	return offset, fmt.Errorf("%T read field %d '%s' errno: %s", x, number, fieldIDToName_BaseResp[number], err)
 }
 
 func (x *BaseResp) fastReadField1(buf []byte, _type int8) (offset int, err error) {
@@ -307,9 +307,9 @@ func (x *FavoriteActionRequest) FastRead(buf []byte, _type int8, number int32) (
 	}
 	return offset, nil
 SkipFieldError:
-	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, errno: %s", x, err)
 ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_FavoriteActionRequest[number], err)
+	return offset, fmt.Errorf("%T read field %d '%s' errno: %s", x, number, fieldIDToName_FavoriteActionRequest[number], err)
 }
 
 func (x *FavoriteActionRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
@@ -342,9 +342,9 @@ func (x *FavoriteActionResponse) FastRead(buf []byte, _type int8, number int32) 
 	}
 	return offset, nil
 SkipFieldError:
-	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, errno: %s", x, err)
 ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_FavoriteActionResponse[number], err)
+	return offset, fmt.Errorf("%T read field %d '%s' errno: %s", x, number, fieldIDToName_FavoriteActionResponse[number], err)
 }
 
 func (x *FavoriteActionResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
@@ -372,9 +372,9 @@ func (x *FavoriteListRequest) FastRead(buf []byte, _type int8, number int32) (of
 	}
 	return offset, nil
 SkipFieldError:
-	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, errno: %s", x, err)
 ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_FavoriteListRequest[number], err)
+	return offset, fmt.Errorf("%T read field %d '%s' errno: %s", x, number, fieldIDToName_FavoriteListRequest[number], err)
 }
 
 func (x *FavoriteListRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
@@ -402,9 +402,9 @@ func (x *FavoriteListResponse) FastRead(buf []byte, _type int8, number int32) (o
 	}
 	return offset, nil
 SkipFieldError:
-	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, errno: %s", x, err)
 ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_FavoriteListResponse[number], err)
+	return offset, fmt.Errorf("%T read field %d '%s' errno: %s", x, number, fieldIDToName_FavoriteListResponse[number], err)
 }
 
 func (x *FavoriteListResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
@@ -462,9 +462,9 @@ func (x *CommentActionRequest) FastRead(buf []byte, _type int8, number int32) (o
 	}
 	return offset, nil
 SkipFieldError:
-	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, errno: %s", x, err)
 ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_CommentActionRequest[number], err)
+	return offset, fmt.Errorf("%T read field %d '%s' errno: %s", x, number, fieldIDToName_CommentActionRequest[number], err)
 }
 
 func (x *CommentActionRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
@@ -512,9 +512,9 @@ func (x *CommentActionResponse) FastRead(buf []byte, _type int8, number int32) (
 	}
 	return offset, nil
 SkipFieldError:
-	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, errno: %s", x, err)
 ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_CommentActionResponse[number], err)
+	return offset, fmt.Errorf("%T read field %d '%s' errno: %s", x, number, fieldIDToName_CommentActionResponse[number], err)
 }
 
 func (x *CommentActionResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
@@ -552,9 +552,9 @@ func (x *CommentListRequest) FastRead(buf []byte, _type int8, number int32) (off
 	}
 	return offset, nil
 SkipFieldError:
-	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, errno: %s", x, err)
 ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_CommentListRequest[number], err)
+	return offset, fmt.Errorf("%T read field %d '%s' errno: %s", x, number, fieldIDToName_CommentListRequest[number], err)
 }
 
 func (x *CommentListRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
@@ -582,9 +582,9 @@ func (x *CommentListResponse) FastRead(buf []byte, _type int8, number int32) (of
 	}
 	return offset, nil
 SkipFieldError:
-	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, errno: %s", x, err)
 ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_CommentListResponse[number], err)
+	return offset, fmt.Errorf("%T read field %d '%s' errno: %s", x, number, fieldIDToName_CommentListResponse[number], err)
 }
 
 func (x *CommentListResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
