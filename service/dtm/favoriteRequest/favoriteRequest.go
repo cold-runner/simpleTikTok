@@ -38,6 +38,8 @@ var (
 	// 4. 在用户表中的作者获赞数量 total_favorited +1 (rpc 调用)
 	addAuthorTotalFavorited    = "/addAuthorTotalFavorited"
 	deleteAuthorTotalFavorited = "/deleteAuthorTotalFavorited"
+	// 放弃补偿
+	abortedCompensate = "/abortedCompensate"
 )
 
 func InitRequestVariables() {
@@ -68,30 +70,30 @@ func FavoriteActionRequest(request *FavoriteActionRequestToDTM) error {
 	if request.ActionType == 1 {
 		saga = dtmcli.NewSaga(dtmServer, gid).
 			Add(host+addVideoFavoriteRelation,
-				host+deleteVideoFavoriteRelation,
+				host+abortedCompensate,
 				req).
 			Add(host+addVideoFavoriteCount,
-				host+deleteVideoFavoriteCount,
+				host+deleteVideoFavoriteRelation,
 				req).
 			Add(host+addUserFavoriteCount,
-				host+deleteUserFavoriteCount,
+				host+deleteVideoFavoriteCount,
 				req).
 			Add(host+addAuthorTotalFavorited,
-				host+deleteAuthorTotalFavorited,
+				host+deleteUserFavoriteCount,
 				req)
 	} else if request.ActionType == 2 {
 		saga = dtmcli.NewSaga(dtmServer, gid).
 			Add(host+deleteVideoFavoriteRelation,
-				host+addVideoFavoriteRelation,
+				host+abortedCompensate,
 				req).
 			Add(host+deleteVideoFavoriteCount,
-				host+addVideoFavoriteCount,
+				host+addVideoFavoriteRelation,
 				req).
 			Add(host+deleteUserFavoriteCount,
-				host+addUserFavoriteCount,
+				host+addVideoFavoriteCount,
 				req).
 			Add(host+deleteAuthorTotalFavorited,
-				host+addAuthorTotalFavorited,
+				host+addUserFavoriteCount,
 				req)
 	}
 	saga.WaitResult = true
@@ -106,6 +108,10 @@ func FavoriteActionRequest(request *FavoriteActionRequestToDTM) error {
 func AddFavoriteActionRoute(app *gin.Engine) {
 	// 1. 视频点赞关系表
 	//api := viper.GetString("dtm.http.api")
+	app.POST(api+abortedCompensate, func(c *gin.Context) {
+		log.Debugw("Aborted compensate")
+		c.JSON(200, "Aborted compensate")
+	})
 
 	app.POST(api+addVideoFavoriteRelation, func(c *gin.Context) {
 		log.Debugw("start add video favorite relation")
@@ -159,9 +165,11 @@ func AddFavoriteActionRoute(app *gin.Engine) {
 		if err != nil {
 			log.Errorw("update video favorite count failed", "err", err)
 			c.JSON(409, err)
+		} else {
+			log.Debugw("add video favorite count success")
+			c.JSON(200, "add video favorite count success")
 		}
-		log.Debugw("add video favorite count success")
-		c.JSON(200, "update video favorite count success")
+
 	})
 	app.POST(api+deleteVideoFavoriteCount, func(c *gin.Context) {
 		log.Debugw("start delete video favorite count")
@@ -178,9 +186,11 @@ func AddFavoriteActionRoute(app *gin.Engine) {
 		if err != nil {
 			log.Errorw("update video favorite count failed", "err", err)
 			c.JSON(409, err)
+		} else {
+			log.Debugw("delete video favorite count success")
+			c.JSON(200, "delete video favorite count success")
 		}
-		log.Debugw("delete video favorite count success")
-		c.JSON(200, "update video favorite count success")
+
 	})
 	// 3. 用户表用户
 	app.POST(api+addUserFavoriteCount, func(c *gin.Context) {
@@ -198,9 +208,11 @@ func AddFavoriteActionRoute(app *gin.Engine) {
 		if err != nil {
 			log.Errorw("update user favorite count failed", "err", err)
 			c.JSON(409, err.Error())
+		} else {
+			log.Debugw("add user favorite count success")
+			c.JSON(200, "add user favorite count success")
 		}
-		log.Debugw("add user favorite count success")
-		c.JSON(200, "update user favorite count success")
+
 	})
 
 	app.POST(api+deleteUserFavoriteCount, func(c *gin.Context) {
@@ -218,10 +230,10 @@ func AddFavoriteActionRoute(app *gin.Engine) {
 		if err != nil {
 			log.Errorw("update user favorite count failed", "err", err)
 			c.JSON(409, err.Error())
+		} else {
+			log.Debugw("delete user favorite count success")
+			c.JSON(200, "delete user favorite count success")
 		}
-
-		log.Debugw("delete user favorite count success")
-		c.JSON(200, "update user favorite count success")
 	})
 
 	// 4. 用户表作者
@@ -240,14 +252,14 @@ func AddFavoriteActionRoute(app *gin.Engine) {
 		if err != nil {
 			log.Errorw("update user favorite count failed", "err", err)
 			c.JSON(409, err.Error())
+		} else {
+			log.Debugw("add author total favorited success")
+			c.JSON(200, "add user favorite count success")
 		}
-
-		log.Debugw("add author total favorited success")
-		c.JSON(200, "update user favorite count success")
 	})
 
 	app.POST(api+deleteAuthorTotalFavorited, func(c *gin.Context) {
-		log.Debugw("start add author total favorited")
+		log.Debugw("start delete author total favorited")
 		var data map[string]interface{}
 		if err := c.ShouldBindJSON(&data); err != nil {
 			log.Errorw("Failed to bind JSON: %v", err)
@@ -261,9 +273,9 @@ func AddFavoriteActionRoute(app *gin.Engine) {
 		if err != nil {
 			log.Errorw("update user favorite count failed", "err", err)
 			c.JSON(409, err.Error())
+		} else {
+			log.Debugw("delete author total favorited success")
+			c.JSON(200, "delete user favorite count success")
 		}
-
-		log.Debugw("add author total favorited success")
-		c.JSON(200, "update user favorite count success")
 	})
 }
