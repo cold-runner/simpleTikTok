@@ -2,6 +2,8 @@ package model
 
 import (
 	"github.com/cold-runner/simpleTikTok/pkg/encryption"
+	"github.com/cold-runner/simpleTikTok/pkg/errno"
+	"github.com/cold-runner/simpleTikTok/pkg/log"
 	"gorm.io/gorm"
 )
 
@@ -32,6 +34,19 @@ func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
 	u.Password, err = encryption.Encrypt(u.Password)
 	if err != nil {
 		return err
+	}
+	return nil
+}
+
+func (u *User) BeforeUpdate(tx *gorm.DB) error {
+	return u.validateCounts()
+}
+
+// validateCounts 验证所有的Count字段都必须 >= 0
+func (u *User) validateCounts() error {
+	if u.FollowCount < 0 || u.FollowerCount < 0 || u.TotalFavorited < 0 || u.WorkCount < 0 || u.FavoriteCount < 0 {
+		log.Errorw("invalid count", "user", u)
+		return errno.ErrInvalidUpdate
 	}
 	return nil
 }

@@ -2,11 +2,14 @@ package mq
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/cloudwego/hertz/pkg/common/json"
 	"github.com/cold-runner/simpleTikTok/pkg/log"
-	"github.com/cold-runner/simpleTikTok/service/relation/dal"
-	"github.com/cold-runner/simpleTikTok/service/relation/dal/redis"
+	"github.com/cold-runner/simpleTikTok/service/video/dal"
+	"github.com/cold-runner/simpleTikTok/service/video/dal/model"
+	"github.com/cold-runner/simpleTikTok/service/video/minio"
+	"github.com/google/uuid"
 	"github.com/streadway/amqp"
+	"sync"
 )
 
 // Consumer 消费者结构体
@@ -38,67 +41,65 @@ func (c *Consumer) Consume() {
 		log.Fatalw("cannot Consume queue", "err", err)
 	}
 
-	for msg := range msgs {
-		var request RelationActionRequest
-		if err := json.Unmarshal(msg.Body, &request); err != nil {
-			log.Errorw("failed to unmarshal message: %v", "err", err)
-			continue
-		}
+	forever := make(chan bool)
 
-		// 处理关注/取关操作
-		if request.ActionType == 1 {
-			// 执行关注操作，更新MySQL和Redis
-			err = followAction(request.UserId, request.ToUserId)
-			if err != nil {
-				log.Errorw("failed to execute follow action", "err", err)
+	go func() {
+		for msg := range msgs {
+			var request VideoPublishRequest
+			if err := json.Unmarshal(msg.Body, &request); err != nil {
+				log.Errorw("Cannot unmarshal message", "err", err)
+				continue
 			}
-		} else if request.ActionType == 2 {
-			// 执行取关操作，更新MySQL和Redis
-			err = unfollowAction(request.UserId, request.ToUserId)
+			videoUUID, err := uuid.NewRandom()
 			if err != nil {
-				log.Errorw("failed to execute unfollow action", "err", err)
+				log.Errorw("generate video uuid failed", "err", err)
 			}
+			videoName := videoUUID.String() + "." + "mp4"
+			imageName := videoUUID.String() + "." + "jpg"
+			videoURL := minio.BuildVideoURL(videoName)
+			imageURL := minio.BuildImageURL(imageName)
+			var wg sync.WaitGroup
+			// 上传视频到Minio
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				err := minio.UploadVideo(context.Background(), videoName, request.Data)
+				if err != nil {
+					log.Errorw("Failed to upload to Minio", "err", err)
+				}
+			}()
+
+			// 上传视频数据到MySQL
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				videoInfo := &model.Video{
+					AuthorID:      request.AuthorID,
+					PlayUrl:       videoURL,
+					CoverUrl:      imageURL,
+					FavoriteCount: 0,
+					CommentCount:  0,
+					Title:         request.Title,
+				}
+				err := dal.CreateVideo(context.Background(), videoInfo)
+				if err != nil {
+					log.Errorw("Failed to upload metadata to MySQL", "err", err)
+				}
+			}()
+			wg.Wait()
+
+			// 进行封面截取并上传
+			coverBuf, err := minio.ExtractCoverByVideoURL(videoURL)
+			if err != nil {
+				log.Errorw("Failed to extract cover", "err", err)
+			}
+			err = minio.UploadImage(context.Background(), imageName, coverBuf)
+			if err != nil {
+				log.Errorw("Failed to upload cover to Minio", "err", err)
+			}
+			log.Debugw("Success to publish video", "videoName", videoName, "imageName", imageName)
 		}
-	}
-}
+	}()
 
-func followAction(uid, toUid int64) error {
-	ctx := context.Background()
-	err := dal.CreateFollowRelation(ctx, uid, toUid)
-	if err != nil {
-		log.Errorw("RelationActionService.followAction", "err", err)
-		return err
-	}
-	log.Infow("Success to follow", "uid", uid, "toUid", toUid)
-	// 处理缓存
-	err = redis.AddToFollowList(uid, toUid)
-	if err != nil {
-		log.Errorw("Failed to add follow cache to redis", "err", err)
-	}
-	err = redis.AddToFollowerList(toUid, uid)
-	if err != nil {
-		log.Errorw("Failed to add follower cache to redis", "err", err)
-	}
-	return nil
-}
-
-func unfollowAction(uid, toUid int64) error {
-	// 判断是否已经关注
-	ctx := context.Background()
-	err := dal.DeleteFollowRelation(ctx, uid, toUid)
-	if err != nil {
-		log.Errorw("RelationActionService.unfollowAction", "err", err)
-	}
-	log.Debugw("Success to unfollow", "uid", uid, "toUid", toUid)
-	// 处理缓存
-	err = redis.RemoveFromFollowList(uid, toUid)
-	if err != nil {
-		log.Errorw("Failed to remove follow cache from redis", "err", err)
-	}
-	err = redis.RemoveFromFollowerList(toUid, uid)
-	if err != nil {
-		log.Errorw("Failed to remove follower cache from redis", "err", err)
-	}
-
-	return nil
+	<-forever
 }

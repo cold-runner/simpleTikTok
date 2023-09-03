@@ -1,6 +1,6 @@
 package model
 
-const TableNameRelation = "user_follow_relations"
+const TableNameRelation = "user_follow_relation"
 
 // UserFollowRelation mapped from table <user_follow_relation>
 type UserFollowRelation struct {

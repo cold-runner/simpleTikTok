@@ -51,7 +51,7 @@ func MatchErr(error error) *Errno {
 	if errors.As(error, &err) {
 		return err
 	}
-	return err
+	return NewErr(400, "UnknownError", error.Error())
 }
 
 func NewErr(httpCode int64, code, msg string) *Errno {

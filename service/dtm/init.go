@@ -1,8 +1,9 @@
-package favoriteRequest
+package main
 
 import (
 	"fmt"
 	"github.com/cold-runner/simpleTikTok/pkg/log"
+	"github.com/cold-runner/simpleTikTok/service/dtm/favoriteRequest"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"net/http"
@@ -11,25 +12,13 @@ import (
 
 var port int
 var dtmHTTPServerAddress string
-var serverReady = make(chan bool)
 var healthCheckAddress string
-var errCh = make(chan error)
 
 func InitDTM() {
 	log.Debugw("InitDTM started")
 	dtmServer := viper.GetString("dtm.server")
 	log.Debugw("dtm server", "DtmServer", dtmServer)
-	go startDTMHTTPServer()
-	log.Debugw("Waiting for server to be ready")
-	select {
-	case <-serverReady:
-		log.Debugw("Server is ready")
-	case err := <-errCh:
-		log.Fatalw("Server failed", "err", err)
-	}
-	for {
-		time.Sleep(time.Hour)
-	}
+	startDTMHTTPServer()
 }
 
 func startDTMHTTPServer() {
@@ -43,19 +32,19 @@ func startDTMHTTPServer() {
 	)
 	addRoute(app)
 	log.Debugw("start dtm http server", "address", dtmHTTPServerAddress)
-	go func() {
-		if err := app.Run(fmt.Sprintf(":%d", port)); err != nil {
-			errCh <- err
-		}
-	}()
-	serverReady <- true
+	err := app.Run(fmt.Sprintf(":%d", port))
+	if err != nil {
+		log.Errorw("dtm http server failed", "err", err)
+		return
+	}
+
 }
 
 func addRoute(app *gin.Engine) {
 	// 添加健康检查路由
 	addHealthCheckRoute(app)
 	// 添加其他业务路由
-	AddFavoriteActionRoute(app)
+	favoriteRequest.AddFavoriteActionRoute(app)
 }
 
 func addHealthCheckRoute(app *gin.Engine) {

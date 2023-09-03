@@ -6,11 +6,10 @@ import (
 	"time"
 )
 
-// RelationActionRequest 关注/取关请求结构体
-type RelationActionRequest struct {
-	UserId     int64 `json:"user_id"`
-	ToUserId   int64 `json:"to_user_id"`
-	ActionType int32 `json:"action_type"`
+type VideoPublishRequest struct {
+	AuthorID int64  `json:"author_id"`
+	Data     []byte `json:"data"`
+	Title    string `json:"title"`
 }
 
 // Producer 生产者结构体
@@ -31,7 +30,7 @@ func NewProducer(conn *amqp.Connection, queueName string) (*Producer, error) {
 	}, nil
 }
 
-func (p *Producer) Publish(request RelationActionRequest) error {
+func (p *Producer) Publish(request VideoPublishRequest) error {
 	message, err := json.Marshal(request)
 	if err != nil {
 		return err

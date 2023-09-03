@@ -1,4 +1,4 @@
-package dtmRequest
+package favoriteRequest
 
 import (
 	"fmt"
@@ -22,6 +22,10 @@ type FavoriteActionRequestToDTM struct {
 
 // 给一个视频点赞需要完成如下的业务逻辑：
 var (
+	api       string
+	host      string
+	dtmServer string
+
 	// 1. 在视频点赞关系表中添加一条记录 （mysql 数据库操作)
 	addVideoFavoriteRelation    = "/addVideoFavoriteRelation"
 	deleteVideoFavoriteRelation = "/deleteVideoFavoriteRelation"
@@ -36,6 +40,19 @@ var (
 	deleteAuthorTotalFavorited = "/deleteAuthorTotalFavorited"
 )
 
+func InitRequestVariables() {
+	host = fmt.Sprintf(
+		"%s:%d%s",
+		viper.GetString("dtm.http.host"),
+		viper.GetInt("dtm.http.port"),
+		viper.GetString("dtm.http.api"),
+	)
+
+	dtmServer = viper.GetString("dtm.server")
+	api = viper.GetString("dtm.http.api")
+
+}
+
 func FavoriteActionRequest(request *FavoriteActionRequestToDTM) error {
 	var saga *dtmcli.Saga
 	gid := shortuuid.New()
@@ -45,16 +62,9 @@ func FavoriteActionRequest(request *FavoriteActionRequestToDTM) error {
 		"author_id":   request.AuthorId,
 		"action_type": request.ActionType,
 	}
-	dtmServer := viper.GetString("dtm.server")
-	host := fmt.Sprintf(
-		"%s:%d%s",
-		viper.GetString("dtm.http.host"),
-		viper.GetInt("dtm.http.port"),
-		viper.GetString("dtm.http.api"),
-	)
 
-	log.Debugw("host address:", "host", host)
-	//req := &gin.H{"amount": 1}
+	log.Debugw("start favorite action request, action type is",
+		"action_type", request.ActionType)
 	if request.ActionType == 1 {
 		saga = dtmcli.NewSaga(dtmServer, gid).
 			Add(host+addVideoFavoriteRelation,
@@ -95,7 +105,7 @@ func FavoriteActionRequest(request *FavoriteActionRequestToDTM) error {
 
 func AddFavoriteActionRoute(app *gin.Engine) {
 	// 1. 视频点赞关系表
-	api := viper.GetString("dtm.http.api")
+	//api := viper.GetString("dtm.http.api")
 
 	app.POST(api+addVideoFavoriteRelation, func(c *gin.Context) {
 		log.Debugw("start add video favorite relation")
@@ -141,7 +151,7 @@ func AddFavoriteActionRoute(app *gin.Engine) {
 			log.Errorw("Failed to bind JSON: %v", err)
 		}
 		videoId := int64(data["video_id"].(float64))
-		resp, err := rpc.VideoClient.UpdateVideoFavoriteCount(c,
+		_, err := rpc.VideoClient.UpdateVideoFavoriteCount(c,
 			&VideoService.UpdateVideoFavoriteCountRequest{
 				VideoId:    videoId,
 				ActionType: 1,
@@ -149,10 +159,6 @@ func AddFavoriteActionRoute(app *gin.Engine) {
 		if err != nil {
 			log.Errorw("update video favorite count failed", "err", err)
 			c.JSON(409, err)
-		}
-		if resp.BaseResp.GetStatusCode() != 0 || resp.BaseResp.
-			GetStatusCode() != 200 {
-			c.JSON(409, resp)
 		}
 		log.Debugw("add video favorite count success")
 		c.JSON(200, "update video favorite count success")
@@ -164,7 +170,7 @@ func AddFavoriteActionRoute(app *gin.Engine) {
 			log.Errorw("Failed to bind JSON: %v", err)
 		}
 		videoId := int64(data["video_id"].(float64))
-		resp, err := rpc.VideoClient.UpdateVideoFavoriteCount(c,
+		_, err := rpc.VideoClient.UpdateVideoFavoriteCount(c,
 			&VideoService.UpdateVideoFavoriteCountRequest{
 				VideoId:    videoId,
 				ActionType: 2,
@@ -172,10 +178,6 @@ func AddFavoriteActionRoute(app *gin.Engine) {
 		if err != nil {
 			log.Errorw("update video favorite count failed", "err", err)
 			c.JSON(409, err)
-		}
-		if resp.BaseResp.GetStatusCode() != 0 || resp.BaseResp.
-			GetStatusCode() != 200 {
-			c.JSON(409, resp)
 		}
 		log.Debugw("delete video favorite count success")
 		c.JSON(200, "update video favorite count success")
@@ -188,7 +190,7 @@ func AddFavoriteActionRoute(app *gin.Engine) {
 			log.Errorw("Failed to bind JSON: %v", err)
 		}
 		userId := int64(data["user_id"].(float64))
-		resp, err := rpc.UserClient.ChangeUserFavoriteCount(c,
+		_, err := rpc.UserClient.ChangeUserFavoriteCount(c,
 			&UserService.ChangeUserFavoriteCountRequest{
 				Id:         userId,
 				ActionType: 1,
@@ -196,10 +198,6 @@ func AddFavoriteActionRoute(app *gin.Engine) {
 		if err != nil {
 			log.Errorw("update user favorite count failed", "err", err)
 			c.JSON(409, err.Error())
-		}
-		if resp.BaseResp.GetStatusCode() != 0 || resp.BaseResp.
-			GetStatusCode() != 200 {
-			c.JSON(409, resp)
 		}
 		log.Debugw("add user favorite count success")
 		c.JSON(200, "update user favorite count success")
@@ -212,7 +210,7 @@ func AddFavoriteActionRoute(app *gin.Engine) {
 			log.Errorw("Failed to bind JSON: %v", err)
 		}
 		userId := int64(data["user_id"].(float64))
-		resp, err := rpc.UserClient.ChangeUserFavoriteCount(c,
+		_, err := rpc.UserClient.ChangeUserFavoriteCount(c,
 			&UserService.ChangeUserFavoriteCountRequest{
 				Id:         userId,
 				ActionType: 2,
@@ -221,10 +219,7 @@ func AddFavoriteActionRoute(app *gin.Engine) {
 			log.Errorw("update user favorite count failed", "err", err)
 			c.JSON(409, err.Error())
 		}
-		if resp.BaseResp.GetStatusCode() != 0 || resp.BaseResp.
-			GetStatusCode() != 200 {
-			c.JSON(409, resp)
-		}
+
 		log.Debugw("delete user favorite count success")
 		c.JSON(200, "update user favorite count success")
 	})
@@ -237,7 +232,7 @@ func AddFavoriteActionRoute(app *gin.Engine) {
 			log.Errorw("Failed to bind JSON: %v", err)
 		}
 		authorId := int64(data["author_id"].(float64))
-		resp, err := rpc.UserClient.ChangeUserTotalFavoritedCount(c,
+		_, err := rpc.UserClient.ChangeUserTotalFavoritedCount(c,
 			&UserService.ChangeUserTotalFavoritedCountRequest{
 				Id:         authorId,
 				ActionType: 1,
@@ -246,10 +241,7 @@ func AddFavoriteActionRoute(app *gin.Engine) {
 			log.Errorw("update user favorite count failed", "err", err)
 			c.JSON(409, err.Error())
 		}
-		if resp.BaseResp.GetStatusCode() != 0 || resp.BaseResp.
-			GetStatusCode() != 200 {
-			c.JSON(409, resp)
-		}
+
 		log.Debugw("add author total favorited success")
 		c.JSON(200, "update user favorite count success")
 	})
@@ -261,7 +253,7 @@ func AddFavoriteActionRoute(app *gin.Engine) {
 			log.Errorw("Failed to bind JSON: %v", err)
 		}
 		authorId := int64(data["author_id"].(float64))
-		resp, err := rpc.UserClient.ChangeUserTotalFavoritedCount(c,
+		_, err := rpc.UserClient.ChangeUserTotalFavoritedCount(c,
 			&UserService.ChangeUserTotalFavoritedCountRequest{
 				Id:         authorId,
 				ActionType: 2,
@@ -270,10 +262,7 @@ func AddFavoriteActionRoute(app *gin.Engine) {
 			log.Errorw("update user favorite count failed", "err", err)
 			c.JSON(409, err.Error())
 		}
-		if resp.BaseResp.GetStatusCode() != 0 || resp.BaseResp.
-			GetStatusCode() != 200 {
-			c.JSON(409, resp)
-		}
+
 		log.Debugw("add author total favorited success")
 		c.JSON(200, "update user favorite count success")
 	})

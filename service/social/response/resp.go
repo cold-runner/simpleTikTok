@@ -8,7 +8,7 @@ import (
 
 // 封装基本报文格式
 func newBaseResp(err *errno.Errno) *SocialService.BaseResp {
-	if err.HTTP == 200 {
+	if err.HTTP == 200 || err.HTTP == 0 {
 		return &SocialService.BaseResp{
 			StatusCode: 0,
 			StatusMsg:  err.Message,

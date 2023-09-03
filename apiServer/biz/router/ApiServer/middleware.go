@@ -17,8 +17,63 @@ func _douyinMw() []app.HandlerFunc {
 	return nil
 }
 
+func _commentMw() []app.HandlerFunc {
+	// your code...
+	return []app.HandlerFunc{
+		mw.JwtMiddleware.MiddlewareFunc(),
+	}
+}
+
+func _actionMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _commentactionMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _listMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _videocommentlistMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _favoriteMw() []app.HandlerFunc {
+	// your code...
+	return []app.HandlerFunc{
+		mw.JwtMiddleware.MiddlewareFunc(),
+	}
+}
+
+func _action0Mw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _favoriteactionMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _list0Mw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _favoritelistMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
 func _feedMw() []app.HandlerFunc {
 	// your code...
+	// feed 流可以不用jwt
 	return []app.HandlerFunc{
 		mw.MiddlewareFunc(),
 	}
@@ -31,31 +86,29 @@ func _feed0Mw() []app.HandlerFunc {
 
 func _publishMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		mw.JwtMiddleware.MiddlewareFunc(),
+	}
 }
 
-func _actionMw() []app.HandlerFunc {
+func _action1Mw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
 
 func _publishactionMw() []app.HandlerFunc {
 	// your code...
-	return []app.HandlerFunc{
-		mw.JwtMiddleware.MiddlewareFunc(),
-	}
+	return nil
 }
 
-func _listMw() []app.HandlerFunc {
+func _list1Mw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
 
 func _publishlistMw() []app.HandlerFunc {
 	// your code...
-	return []app.HandlerFunc{
-		mw.JwtMiddleware.MiddlewareFunc(),
-	}
+	return nil
 }
 
 func _relationMw() []app.HandlerFunc {
@@ -65,7 +118,7 @@ func _relationMw() []app.HandlerFunc {
 	}
 }
 
-func _action0Mw() []app.HandlerFunc {
+func _action2Mw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
@@ -77,12 +130,10 @@ func _relationactionMw() []app.HandlerFunc {
 
 func _followMw() []app.HandlerFunc {
 	// your code...
-	return []app.HandlerFunc{
-		mw.JwtMiddleware.MiddlewareFunc(),
-	}
+	return nil
 }
 
-func _list0Mw() []app.HandlerFunc {
+func _list2Mw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
@@ -94,12 +145,10 @@ func _getfollowlistMw() []app.HandlerFunc {
 
 func _followerMw() []app.HandlerFunc {
 	// your code...
-	return []app.HandlerFunc{
-		mw.JwtMiddleware.MiddlewareFunc(),
-	}
+	return nil
 }
 
-func _list1Mw() []app.HandlerFunc {
+func _list3Mw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
