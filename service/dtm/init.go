@@ -3,16 +3,18 @@ package main
 import (
 	"fmt"
 	"github.com/cold-runner/simpleTikTok/pkg/log"
-	"github.com/cold-runner/simpleTikTok/service/dtm/favoriteRequest"
+	"github.com/cold-runner/simpleTikTok/service/dtm/request"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"net/http"
 	"time"
 )
 
-var port int
-var dtmHTTPServerAddress string
-var healthCheckAddress string
+var (
+	port                 int
+	dtmHTTPServerAddress string
+	healthCheckAddress   string
+)
 
 func InitDTM() {
 	log.Debugw("InitDTM started")
@@ -41,10 +43,14 @@ func startDTMHTTPServer() {
 }
 
 func addRoute(app *gin.Engine) {
+	// 放弃补偿方法路由
+
 	// 添加健康检查路由
 	addHealthCheckRoute(app)
 	// 添加其他业务路由
-	favoriteRequest.AddFavoriteActionRoute(app)
+	request.AddAbortedCompensateRoute(app)
+	request.AddFavoriteActionRoute(app)
+	request.AddCommentActionRoute(app)
 }
 
 func addHealthCheckRoute(app *gin.Engine) {

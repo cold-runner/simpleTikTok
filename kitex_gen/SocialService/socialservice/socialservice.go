@@ -24,6 +24,8 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	methods := map[string]kitex.MethodInfo{
 		"FavoriteAction": kitex.NewMethodInfo(favoriteActionHandler, newFavoriteActionArgs, newFavoriteActionResult, false),
 		"CommentAction":  kitex.NewMethodInfo(commentActionHandler, newCommentActionArgs, newCommentActionResult, false),
+		"FavoriteList":   kitex.NewMethodInfo(favoriteListHandler, newFavoriteListArgs, newFavoriteListResult, false),
+		"CommentList":    kitex.NewMethodInfo(commentListHandler, newCommentListArgs, newCommentListResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "social",
@@ -345,6 +347,312 @@ func (p *CommentActionResult) GetResult() interface{} {
 	return p.Success
 }
 
+func favoriteListHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(SocialService.FavoriteListRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(SocialService.SocialService).FavoriteList(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *FavoriteListArgs:
+		success, err := handler.(SocialService.SocialService).FavoriteList(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*FavoriteListResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newFavoriteListArgs() interface{} {
+	return &FavoriteListArgs{}
+}
+
+func newFavoriteListResult() interface{} {
+	return &FavoriteListResult{}
+}
+
+type FavoriteListArgs struct {
+	Req *SocialService.FavoriteListRequest
+}
+
+func (p *FavoriteListArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(SocialService.FavoriteListRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *FavoriteListArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *FavoriteListArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *FavoriteListArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in FavoriteListArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *FavoriteListArgs) Unmarshal(in []byte) error {
+	msg := new(SocialService.FavoriteListRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var FavoriteListArgs_Req_DEFAULT *SocialService.FavoriteListRequest
+
+func (p *FavoriteListArgs) GetReq() *SocialService.FavoriteListRequest {
+	if !p.IsSetReq() {
+		return FavoriteListArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *FavoriteListArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *FavoriteListArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type FavoriteListResult struct {
+	Success *SocialService.FavoriteListResponse
+}
+
+var FavoriteListResult_Success_DEFAULT *SocialService.FavoriteListResponse
+
+func (p *FavoriteListResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(SocialService.FavoriteListResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *FavoriteListResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *FavoriteListResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *FavoriteListResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in FavoriteListResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *FavoriteListResult) Unmarshal(in []byte) error {
+	msg := new(SocialService.FavoriteListResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *FavoriteListResult) GetSuccess() *SocialService.FavoriteListResponse {
+	if !p.IsSetSuccess() {
+		return FavoriteListResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *FavoriteListResult) SetSuccess(x interface{}) {
+	p.Success = x.(*SocialService.FavoriteListResponse)
+}
+
+func (p *FavoriteListResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *FavoriteListResult) GetResult() interface{} {
+	return p.Success
+}
+
+func commentListHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(SocialService.CommentListRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(SocialService.SocialService).CommentList(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *CommentListArgs:
+		success, err := handler.(SocialService.SocialService).CommentList(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*CommentListResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newCommentListArgs() interface{} {
+	return &CommentListArgs{}
+}
+
+func newCommentListResult() interface{} {
+	return &CommentListResult{}
+}
+
+type CommentListArgs struct {
+	Req *SocialService.CommentListRequest
+}
+
+func (p *CommentListArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(SocialService.CommentListRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *CommentListArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *CommentListArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *CommentListArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in CommentListArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *CommentListArgs) Unmarshal(in []byte) error {
+	msg := new(SocialService.CommentListRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var CommentListArgs_Req_DEFAULT *SocialService.CommentListRequest
+
+func (p *CommentListArgs) GetReq() *SocialService.CommentListRequest {
+	if !p.IsSetReq() {
+		return CommentListArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *CommentListArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *CommentListArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type CommentListResult struct {
+	Success *SocialService.CommentListResponse
+}
+
+var CommentListResult_Success_DEFAULT *SocialService.CommentListResponse
+
+func (p *CommentListResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(SocialService.CommentListResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *CommentListResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *CommentListResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *CommentListResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in CommentListResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *CommentListResult) Unmarshal(in []byte) error {
+	msg := new(SocialService.CommentListResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *CommentListResult) GetSuccess() *SocialService.CommentListResponse {
+	if !p.IsSetSuccess() {
+		return CommentListResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *CommentListResult) SetSuccess(x interface{}) {
+	p.Success = x.(*SocialService.CommentListResponse)
+}
+
+func (p *CommentListResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *CommentListResult) GetResult() interface{} {
+	return p.Success
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -370,6 +678,26 @@ func (p *kClient) CommentAction(ctx context.Context, Req *SocialService.CommentA
 	_args.Req = Req
 	var _result CommentActionResult
 	if err = p.c.Call(ctx, "CommentAction", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) FavoriteList(ctx context.Context, Req *SocialService.FavoriteListRequest) (r *SocialService.FavoriteListResponse, err error) {
+	var _args FavoriteListArgs
+	_args.Req = Req
+	var _result FavoriteListResult
+	if err = p.c.Call(ctx, "FavoriteList", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) CommentList(ctx context.Context, Req *SocialService.CommentListRequest) (r *SocialService.CommentListResponse, err error) {
+	var _args CommentListArgs
+	_args.Req = Req
+	var _result CommentListResult
+	if err = p.c.Call(ctx, "CommentList", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

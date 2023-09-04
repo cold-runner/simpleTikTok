@@ -5,7 +5,7 @@ import (
 	"github.com/cold-runner/simpleTikTok/kitex_gen/SocialService"
 	"github.com/cold-runner/simpleTikTok/kitex_gen/VideoService"
 	"github.com/cold-runner/simpleTikTok/pkg/log"
-	dtm "github.com/cold-runner/simpleTikTok/service/dtm/favoriteRequest"
+	dtm "github.com/cold-runner/simpleTikTok/service/dtm/request"
 	"github.com/cold-runner/simpleTikTok/service/social/rpc"
 )
 

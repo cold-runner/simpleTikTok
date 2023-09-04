@@ -14,7 +14,7 @@ type Client interface {
 	VideoFeed(ctx context.Context, Req *VideoService.VideoFeedRequest, callOptions ...callopt.Option) (r *VideoService.VideoFeedResponse, err error)
 	VideoPublishAction(ctx context.Context, Req *VideoService.VideoPublishActionRequest, callOptions ...callopt.Option) (r *VideoService.VideoPublishActionResponse, err error)
 	VideoPublishList(ctx context.Context, Req *VideoService.VideoPublishListRequest, callOptions ...callopt.Option) (r *VideoService.VideoPublishListResponse, err error)
-	VideoPublishListByIds(ctx context.Context, Req *VideoService.VideoPublishListByIdsRequest, callOptions ...callopt.Option) (r *VideoService.VideoPublishListByIdsResponse, err error)
+	VideoPublishListByIds(ctx context.Context, Req *VideoService.VideoPublishListByIdsRequest, callOptions ...callopt.Option) (r *VideoService.VideoPublishListResponse, err error)
 	UpdateVideoFavoriteCount(ctx context.Context, Req *VideoService.UpdateVideoFavoriteCountRequest, callOptions ...callopt.Option) (r *VideoService.UpdateVideoInfoResponse, err error)
 	UpdateVideoCommentCount(ctx context.Context, Req *VideoService.UpdateVideoCommentCountRequest, callOptions ...callopt.Option) (r *VideoService.UpdateVideoInfoResponse, err error)
 	GetAuthorIdByVideoId(ctx context.Context, Req *VideoService.GetAuthorIdByVideoIdRequest, callOptions ...callopt.Option) (r *VideoService.GetAuthorIdByVideoIdResponse, err error)
@@ -64,7 +64,7 @@ func (p *kVideoServiceClient) VideoPublishList(ctx context.Context, Req *VideoSe
 	return p.kClient.VideoPublishList(ctx, Req)
 }
 
-func (p *kVideoServiceClient) VideoPublishListByIds(ctx context.Context, Req *VideoService.VideoPublishListByIdsRequest, callOptions ...callopt.Option) (r *VideoService.VideoPublishListByIdsResponse, err error) {
+func (p *kVideoServiceClient) VideoPublishListByIds(ctx context.Context, Req *VideoService.VideoPublishListByIdsRequest, callOptions ...callopt.Option) (r *VideoService.VideoPublishListResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.VideoPublishListByIds(ctx, Req)
 }

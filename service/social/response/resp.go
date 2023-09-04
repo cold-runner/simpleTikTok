@@ -3,6 +3,7 @@ package response
 import (
 	"errors"
 	"github.com/cold-runner/simpleTikTok/kitex_gen/SocialService"
+	"github.com/cold-runner/simpleTikTok/kitex_gen/VideoService"
 	"github.com/cold-runner/simpleTikTok/pkg/errno"
 )
 
@@ -44,4 +45,31 @@ func BuildFavoriteActionResp(err error) *SocialService.FavoriteActionResponse {
 	return &SocialService.FavoriteActionResponse{
 		BaseResp: baseResp,
 	}
+}
+
+func BuildFavoriteListResp(videoList []*VideoService.Video, err error) *SocialService.
+	FavoriteListResponse {
+	baseResp := BuildBaseResp(err)
+	return &SocialService.FavoriteListResponse{
+		BaseResp:  baseResp,
+		VideoList: videoList,
+	}
+}
+
+func BuildCommentActionResp(comment *SocialService.Comment, err error) *SocialService.
+	CommentActionResposne {
+	//log.Debugw("BuildCommentActionResp", "comment", comment, "err", err)
+	baseResp := BuildBaseResp(err)
+	if comment == nil {
+		return &SocialService.CommentActionResposne{
+			BaseResp: baseResp,
+			Comment:  nil,
+		}
+	} else {
+		return &SocialService.CommentActionResposne{
+			BaseResp: baseResp,
+			Comment:  comment,
+		}
+	}
+
 }

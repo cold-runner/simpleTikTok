@@ -1,7 +1,6 @@
-package favoriteRequest
+package request
 
 import (
-	"fmt"
 	"github.com/cold-runner/simpleTikTok/kitex_gen/UserService"
 	"github.com/cold-runner/simpleTikTok/kitex_gen/VideoService"
 	"github.com/cold-runner/simpleTikTok/pkg/log"
@@ -10,7 +9,6 @@ import (
 	"github.com/dtm-labs/client/dtmcli"
 	"github.com/gin-gonic/gin"
 	"github.com/lithammer/shortuuid/v3"
-	"github.com/spf13/viper"
 )
 
 type FavoriteActionRequestToDTM struct {
@@ -22,10 +20,6 @@ type FavoriteActionRequestToDTM struct {
 
 // 给一个视频点赞需要完成如下的业务逻辑：
 var (
-	api       string
-	host      string
-	dtmServer string
-
 	// 1. 在视频点赞关系表中添加一条记录 （mysql 数据库操作)
 	addVideoFavoriteRelation    = "/addVideoFavoriteRelation"
 	deleteVideoFavoriteRelation = "/deleteVideoFavoriteRelation"
@@ -41,19 +35,6 @@ var (
 	// 放弃补偿
 	abortedCompensate = "/abortedCompensate"
 )
-
-func InitRequestVariables() {
-	host = fmt.Sprintf(
-		"%s:%d%s",
-		viper.GetString("dtm.http.host"),
-		viper.GetInt("dtm.http.port"),
-		viper.GetString("dtm.http.api"),
-	)
-
-	dtmServer = viper.GetString("dtm.server")
-	api = viper.GetString("dtm.http.api")
-
-}
 
 func FavoriteActionRequest(request *FavoriteActionRequestToDTM) error {
 	var saga *dtmcli.Saga
@@ -107,12 +88,6 @@ func FavoriteActionRequest(request *FavoriteActionRequestToDTM) error {
 
 func AddFavoriteActionRoute(app *gin.Engine) {
 	// 1. 视频点赞关系表
-	//api := viper.GetString("dtm.http.api")
-	app.POST(api+abortedCompensate, func(c *gin.Context) {
-		log.Debugw("Aborted compensate")
-		c.JSON(200, "Aborted compensate")
-	})
-
 	app.POST(api+addVideoFavoriteRelation, func(c *gin.Context) {
 		log.Debugw("start add video favorite relation")
 		var data map[string]interface{}
@@ -121,14 +96,14 @@ func AddFavoriteActionRoute(app *gin.Engine) {
 		}
 		userId := int64(data["user_id"].(float64))
 		videoId := int64(data["video_id"].(float64))
-
 		err := dal.AddFavorite(c, userId, videoId)
 		if err != nil {
 			log.Errorw("add favorite failed", "err", err)
 			c.JSON(409, err.Error())
+		} else {
+			log.Debugw("add favorite relation success")
+			c.JSON(200, "add video favorite relation success")
 		}
-		log.Debugw("add favorite relation success")
-		c.JSON(200, "add video favorite relation success")
 	})
 
 	app.POST(api+deleteVideoFavoriteRelation, func(c *gin.Context) {
@@ -144,9 +119,10 @@ func AddFavoriteActionRoute(app *gin.Engine) {
 		if err != nil {
 			log.Errorw("add favorite failed", "err", err)
 			c.JSON(409, err.Error())
+		} else {
+			log.Debugw("delete favorite relation success")
+			c.JSON(200, "delete video favorite relation success")
 		}
-		log.Debugw("delete favorite relation success")
-		c.JSON(200, "delete video favorite relation success")
 	})
 
 	// 2. 视频表

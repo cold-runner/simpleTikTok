@@ -561,36 +561,6 @@ func (x *VideoPublishListByIdsRequest) fastReadField2(buf []byte, _type int8) (o
 	return offset, err
 }
 
-func (x *VideoPublishListByIdsResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
-	switch number {
-	case 2:
-		offset, err = x.fastReadField2(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
-	default:
-		offset, err = fastpb.Skip(buf, _type, number)
-		if err != nil {
-			goto SkipFieldError
-		}
-	}
-	return offset, nil
-SkipFieldError:
-	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
-ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_VideoPublishListByIdsResponse[number], err)
-}
-
-func (x *VideoPublishListByIdsResponse) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	var v Video
-	offset, err = fastpb.ReadMessage(buf, _type, &v)
-	if err != nil {
-		return offset, err
-	}
-	x.VideoList = append(x.VideoList, &v)
-	return offset, nil
-}
-
 func (x *UpdateVideoFavoriteCountRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
@@ -1159,24 +1129,6 @@ func (x *VideoPublishListByIdsRequest) fastWriteField2(buf []byte) (offset int) 
 	return offset
 }
 
-func (x *VideoPublishListByIdsResponse) FastWrite(buf []byte) (offset int) {
-	if x == nil {
-		return offset
-	}
-	offset += x.fastWriteField2(buf[offset:])
-	return offset
-}
-
-func (x *VideoPublishListByIdsResponse) fastWriteField2(buf []byte) (offset int) {
-	if x.VideoList == nil {
-		return offset
-	}
-	for i := range x.GetVideoList() {
-		offset += fastpb.WriteMessage(buf[offset:], 2, x.GetVideoList()[i])
-	}
-	return offset
-}
-
 func (x *UpdateVideoFavoriteCountRequest) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -1687,24 +1639,6 @@ func (x *VideoPublishListByIdsRequest) sizeField2() (n int) {
 	return n
 }
 
-func (x *VideoPublishListByIdsResponse) Size() (n int) {
-	if x == nil {
-		return n
-	}
-	n += x.sizeField2()
-	return n
-}
-
-func (x *VideoPublishListByIdsResponse) sizeField2() (n int) {
-	if x.VideoList == nil {
-		return n
-	}
-	for i := range x.GetVideoList() {
-		n += fastpb.SizeMessage(2, x.GetVideoList()[i])
-	}
-	return n
-}
-
 func (x *UpdateVideoFavoriteCountRequest) Size() (n int) {
 	if x == nil {
 		return n
@@ -1876,10 +1810,6 @@ var fieldIDToName_VideoPublishListResponse = map[int32]string{
 var fieldIDToName_VideoPublishListByIdsRequest = map[int32]string{
 	1: "UserId",
 	2: "ToVideoIds",
-}
-
-var fieldIDToName_VideoPublishListByIdsResponse = map[int32]string{
-	2: "VideoList",
 }
 
 var fieldIDToName_UpdateVideoFavoriteCountRequest = map[int32]string{

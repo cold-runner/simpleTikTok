@@ -22,3 +22,29 @@ func FavoriteAction(ctx context.Context,
 	log.Debugw("api server rpc favorite action success", "resp", resp)
 	return resp, nil
 }
+
+func FavoriteList(ctx context.Context,
+	req *SocialService.FavoriteListRequest) (*SocialService.FavoriteListResponse, error) {
+	log.Debugw("Calling rpc favorite list request:", "req", req)
+
+	resp, err := socialClient.FavoriteList(ctx, req)
+	if err != nil {
+		log.Errorw("calling api server rpc favorite list failed", "err", err)
+		return nil, err
+	}
+	log.Debugw("api server rpc favorite list success", "resp", resp)
+	return resp, nil
+}
+
+func CommentAction(ctx context.Context,
+	req *SocialService.CommentActionRequest) (*SocialService.
+	CommentActionResposne, error) {
+	log.Debugw("Calling rpc comment action request:", "req", req)
+	resp, err := socialClient.CommentAction(ctx, req)
+	if err != nil {
+		log.Errorw("calling api server rpc comment action failed", "err", err)
+		return nil, err
+	}
+	log.Debugw("api server rpc comment action success", "resp", resp)
+	return resp, nil
+}

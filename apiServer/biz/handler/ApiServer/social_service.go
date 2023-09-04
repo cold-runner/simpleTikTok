@@ -10,6 +10,7 @@ import (
 	"github.com/cold-runner/simpleTikTok/pkg/errno"
 	"github.com/cold-runner/simpleTikTok/pkg/log"
 	mw "github.com/cold-runner/simpleTikTok/pkg/middleware"
+	"strconv"
 
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
@@ -52,10 +53,19 @@ func FavoriteList(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	v, _ := c.Get(mw.IdentityKey)
+	listResp, err := rpc.FavoriteList(context.Background(),
+		&SocialService.FavoriteListRequest{
+			UserId:   v.(*ApiServer.User).Id,
+			ToUserId: req.GetUserId(),
+		})
+	if err != nil {
+		log.Errorw("rpc favorite list failed", "err", err)
+		response.SendFavoriteListResponse(c, nil, err)
+	} else {
+		response.SendFavoriteListResponse(c, listResp, errno.OK)
+	}
 
-	resp := new(ApiServer.FavoriteListResponse)
-
-	c.JSON(consts.StatusOK, resp)
 }
 
 // CommentAction .
@@ -63,15 +73,43 @@ func FavoriteList(ctx context.Context, c *app.RequestContext) {
 func CommentAction(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req ApiServer.CommentActionRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+	actionTypeStr := c.Query("action_type")
+	actionType, _ := strconv.ParseInt(actionTypeStr, 10, 64)
+
+	if actionType == 1 {
+		videoIdStr := c.Query("video_id")
+		videoId, _ := strconv.ParseInt(videoIdStr, 10, 64)
+		req.VideoId = videoId
+		req.CommentText = c.Query("comment_text")
+
+	} else if actionType == 2 {
+		commentIdStr := c.Query("comment_id")
+		commentId, _ := strconv.ParseInt(commentIdStr, 10, 64)
+		req.CommentId = commentId
+		videoIdStr := c.Query("video_id")
+		videoId, _ := strconv.ParseInt(videoIdStr, 10, 64)
+		req.VideoId = videoId
+	} else {
+		c.String(consts.StatusBadRequest, "action type error")
 		return
 	}
+	v, _ := c.Get(mw.IdentityKey)
+	resp, err := rpc.CommentAction(context.Background(),
+		&SocialService.CommentActionRequest{
+			UserId:      v.(*ApiServer.User).Id,
+			VideoId:     req.GetVideoId(),
+			ActionType:  int32(actionType),
+			CommentText: req.GetCommentText(),
+			CommentId:   req.GetCommentId(),
+		})
+	log.Debugw("resp from rpc comment action", "resp", resp)
 
-	resp := new(ApiServer.CommentActionResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	if err != nil {
+		log.Errorw("rpc comment action failed", "err", err)
+		response.SendCommentActionResponse(c, resp, err)
+	} else {
+		response.SendCommentActionResponse(c, resp, errno.OK)
+	}
 }
 
 // VideoCommentList .

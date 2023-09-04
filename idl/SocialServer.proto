@@ -1,6 +1,8 @@
 syntax = "proto3";
 package social;
 option go_package = "SocialService";
+import "idl/VideoServer.proto";
+
 
 message BaseResp {
   int64 status_code = 1; // 状态码，0-成功，其他值-失败
@@ -19,17 +21,6 @@ message UserInfo {
   int64 total_favorited = 9;
   int64 work_count = 10;
   int64 favorite_count = 11;
-}
-
-message Video {
-  int64 id = 1;
-  UserInfo author = 2;
-  string play_url = 3;
-  string cover_url = 4;
-  int64 favorite_count = 5;
-  int64 comment_count = 6;
-  bool is_favorite = 7;
-  string title = 8;
 }
 
 message Comment {
@@ -58,8 +49,9 @@ message FavoriteListRequest {
 
 message FavoriteListResponse {
   BaseResp base_resp = 1;
-  repeated Video video_list = 2;
+  repeated video.Video video_list = 2;
 }
+
 
 // 评论操作
 message CommentActionRequest {
@@ -88,6 +80,7 @@ message CommentListResponse {
 
 service SocialService {
   rpc FavoriteAction(FavoriteActionRequest) returns (FavoriteActionResponse) {}
-
   rpc CommentAction(CommentActionRequest) returns (CommentActionResposne) {}
+  rpc FavoriteList(FavoriteListRequest) returns (FavoriteListResponse) {}
+  rpc CommentList(CommentListRequest) returns (CommentListResponse) {}
 }

@@ -72,10 +72,6 @@ message VideoPublishListByIdsRequest {
   repeated int64 to_video_ids = 2;
 }
 
-message VideoPublishListByIdsResponse {
-  repeated Video video_list = 2;
-}
-
 // 更新视频信息
 message UpdateVideoFavoriteCountRequest {
   int64 video_id = 1;
@@ -101,11 +97,13 @@ message GetAuthorIdByVideoIdResponse {
   int64 author_id = 2;
 }
 
+
+
 service VideoService {
   rpc VideoFeed(VideoFeedRequest) returns (VideoFeedResponse) {}
   rpc VideoPublishAction(VideoPublishActionRequest) returns (VideoPublishActionResponse) {}
   rpc VideoPublishList(VideoPublishListRequest) returns (VideoPublishListResponse) {}
-  rpc VideoPublishListByIds(VideoPublishListByIdsRequest) returns (VideoPublishListByIdsResponse) {}
+  rpc VideoPublishListByIds(VideoPublishListByIdsRequest) returns (VideoPublishListResponse) {}
   rpc UpdateVideoFavoriteCount(UpdateVideoFavoriteCountRequest) returns (UpdateVideoInfoResponse) {}
   rpc UpdateVideoCommentCount(UpdateVideoCommentCountRequest) returns (UpdateVideoInfoResponse) {}
   rpc GetAuthorIdByVideoId(GetAuthorIdByVideoIdRequest) returns (GetAuthorIdByVideoIdResponse) {}

@@ -33,3 +33,33 @@ func RemoveFavorite(ctx context.Context, userID int64,
 	}
 	return nil
 }
+
+func GetFavoriteVideoListByUid(ctx context.Context,
+	userID int64) ([]int64, error) {
+	var favoriteIDList []int64
+	// 获取用户的点赞列表
+	if err := DB.WithContext(ctx).Model(&model.UserFavoriteVideo{}).Where(
+		"user_id = ?", userID).Pluck("favorite_id", &favoriteIDList).Error; err != nil {
+		log.Errorw("get favorite list failed", "err", err)
+		return nil, err
+	}
+
+	return favoriteIDList, nil
+}
+func GetFavoriteVideoSetByUid(ctx context.Context,
+	userID int64) (map[int64]struct{}, error) {
+	var favoriteIDList []int64
+	favoriteIDSet := make(map[int64]struct{})
+	// 获取用户的点赞列表
+	if err := DB.WithContext(ctx).Model(&model.UserFavoriteVideo{}).Where(
+		"user_id = ?", userID).Pluck("favorite_id", &favoriteIDList).Error; err != nil {
+		log.Errorw("get favorite list failed", "err", err)
+		return nil, err
+	}
+	// 将点赞列表转换为集合
+	for _, v := range favoriteIDList {
+		favoriteIDSet[v] = struct{}{} // 新增
+	}
+
+	return favoriteIDSet, nil
+}

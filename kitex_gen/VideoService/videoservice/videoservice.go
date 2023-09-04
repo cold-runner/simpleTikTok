@@ -595,14 +595,14 @@ func (p *VideoPublishListByIdsArgs) GetFirstArgument() interface{} {
 }
 
 type VideoPublishListByIdsResult struct {
-	Success *VideoService.VideoPublishListByIdsResponse
+	Success *VideoService.VideoPublishListResponse
 }
 
-var VideoPublishListByIdsResult_Success_DEFAULT *VideoService.VideoPublishListByIdsResponse
+var VideoPublishListByIdsResult_Success_DEFAULT *VideoService.VideoPublishListResponse
 
 func (p *VideoPublishListByIdsResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(VideoService.VideoPublishListByIdsResponse)
+		p.Success = new(VideoService.VideoPublishListResponse)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
@@ -629,7 +629,7 @@ func (p *VideoPublishListByIdsResult) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *VideoPublishListByIdsResult) Unmarshal(in []byte) error {
-	msg := new(VideoService.VideoPublishListByIdsResponse)
+	msg := new(VideoService.VideoPublishListResponse)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -637,7 +637,7 @@ func (p *VideoPublishListByIdsResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *VideoPublishListByIdsResult) GetSuccess() *VideoService.VideoPublishListByIdsResponse {
+func (p *VideoPublishListByIdsResult) GetSuccess() *VideoService.VideoPublishListResponse {
 	if !p.IsSetSuccess() {
 		return VideoPublishListByIdsResult_Success_DEFAULT
 	}
@@ -645,7 +645,7 @@ func (p *VideoPublishListByIdsResult) GetSuccess() *VideoService.VideoPublishLis
 }
 
 func (p *VideoPublishListByIdsResult) SetSuccess(x interface{}) {
-	p.Success = x.(*VideoService.VideoPublishListByIdsResponse)
+	p.Success = x.(*VideoService.VideoPublishListResponse)
 }
 
 func (p *VideoPublishListByIdsResult) IsSetSuccess() bool {
@@ -1155,7 +1155,7 @@ func (p *kClient) VideoPublishList(ctx context.Context, Req *VideoService.VideoP
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) VideoPublishListByIds(ctx context.Context, Req *VideoService.VideoPublishListByIdsRequest) (r *VideoService.VideoPublishListByIdsResponse, err error) {
+func (p *kClient) VideoPublishListByIds(ctx context.Context, Req *VideoService.VideoPublishListByIdsRequest) (r *VideoService.VideoPublishListResponse, err error) {
 	var _args VideoPublishListByIdsArgs
 	_args.Req = Req
 	var _result VideoPublishListByIdsResult

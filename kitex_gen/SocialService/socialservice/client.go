@@ -13,6 +13,8 @@ import (
 type Client interface {
 	FavoriteAction(ctx context.Context, Req *SocialService.FavoriteActionRequest, callOptions ...callopt.Option) (r *SocialService.FavoriteActionResponse, err error)
 	CommentAction(ctx context.Context, Req *SocialService.CommentActionRequest, callOptions ...callopt.Option) (r *SocialService.CommentActionResposne, err error)
+	FavoriteList(ctx context.Context, Req *SocialService.FavoriteListRequest, callOptions ...callopt.Option) (r *SocialService.FavoriteListResponse, err error)
+	CommentList(ctx context.Context, Req *SocialService.CommentListRequest, callOptions ...callopt.Option) (r *SocialService.CommentListResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -52,4 +54,14 @@ func (p *kSocialServiceClient) FavoriteAction(ctx context.Context, Req *SocialSe
 func (p *kSocialServiceClient) CommentAction(ctx context.Context, Req *SocialService.CommentActionRequest, callOptions ...callopt.Option) (r *SocialService.CommentActionResposne, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.CommentAction(ctx, Req)
+}
+
+func (p *kSocialServiceClient) FavoriteList(ctx context.Context, Req *SocialService.FavoriteListRequest, callOptions ...callopt.Option) (r *SocialService.FavoriteListResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.FavoriteList(ctx, Req)
+}
+
+func (p *kSocialServiceClient) CommentList(ctx context.Context, Req *SocialService.CommentListRequest, callOptions ...callopt.Option) (r *SocialService.CommentListResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.CommentList(ctx, Req)
 }

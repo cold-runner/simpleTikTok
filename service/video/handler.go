@@ -57,9 +57,20 @@ func (s *VideoServiceImpl) VideoPublishList(ctx context.Context, req *VideoServi
 }
 
 // VideoPublishListByIds implements the VideoServiceImpl interface.
-func (s *VideoServiceImpl) VideoPublishListByIds(ctx context.Context, req *VideoService.VideoPublishListByIdsRequest) (resp *VideoService.VideoPublishListByIdsResponse, err error) {
+func (s *VideoServiceImpl) VideoPublishListByIds(ctx context.Context, req *VideoService.VideoPublishListByIdsRequest) (resp *VideoService.VideoPublishListResponse, err error) {
 	// TODO: Your code here...
-	return
+	if req.GetUserId() <= 0 || len(req.GetToVideoIds()) < 0 {
+		return nil, errno.ErrInvalidParameter
+	}
+
+	videoList, err := service.NewVideoListService(ctx).GetVideoListByIds(req)
+	if err != nil {
+		resp = response.BuildVideoListResp(nil, err)
+		return resp, err
+
+	}
+	resp = response.BuildVideoListResp(videoList, errno.OK)
+	return resp, err
 }
 
 // UpdateVideoFavoriteCount implements the VideoServiceImpl interface.
