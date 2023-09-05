@@ -1,6 +1,8 @@
 syntax = "proto3";
 package relation;
 option go_package = "RelationService";
+import "idl/UserServer.proto";
+import "idl/BaseResp.proto";
 
 message User {
   int64 id = 1;
@@ -8,25 +10,6 @@ message User {
   int64 follow_count = 3;
   int64 follower_count = 4;
   bool is_follow = 5;
-}
-
-message UserInfo {
-  int64 id = 1;
-  string name = 2;
-  int64 follow_count = 3;
-  int64 follower_count = 4;
-  bool is_follow = 5;
-  string  avatar = 6;
-  string background_image  = 7;
-  string signature = 8;
-  int64 total_favorited = 9;
-  int64 work_count = 10;
-  int64 favorite_count = 11;
-}
-
-message BaseResp {
-  int64 status_code = 1; // 状态码，0-成功，其他值-失败
-  string status_msg = 2; //返回状态描述
 }
 
 // 用户关注/取关操作
@@ -37,7 +20,7 @@ message RelationActionRequest {
 }
 
 message RelationActionResponse {
-  BaseResp base_resp = 1;
+  baseResp.BaseResp base_resp = 1;
 }
 
 // 用户关注列表
@@ -47,8 +30,8 @@ message RelationFollowListRequest {
 }
 
 message RelationFollowListResponse {
-  BaseResp base_resp = 1;
-  repeated UserInfo follow_list = 2;
+  baseResp.BaseResp base_resp = 1;
+  repeated user.User follow_list = 2;
 }
 
 // 用户粉丝列表
@@ -58,8 +41,8 @@ message RelationFollowerListRequest {
 }
 
 message RelationFollowerListResponse {
-  BaseResp base_resp = 1;
-  repeated UserInfo follower_list = 2;
+  baseResp.BaseResp base_resp = 1;
+  repeated user.User follower_list = 2;
 }
 
 // 用户关系查询
@@ -69,7 +52,7 @@ message RelationQueryRequest {
 }
 
 message RelationQueryResponse{
-  BaseResp base_resp = 1;
+  baseResp.BaseResp base_resp = 1;
   bool is_follow = 2; // true-已关注，false-未关注
 }
 
@@ -80,7 +63,7 @@ message QueryUserInfosWithRelationRequest {
 }
 
 message QueryUserInfosWithRelationResponse {
-  repeated UserInfo UserInfoList = 1;
+  repeated user.User UserInfoList = 1;
 }
 
 service RelationService {

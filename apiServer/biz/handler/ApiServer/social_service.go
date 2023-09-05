@@ -122,8 +122,18 @@ func VideoCommentList(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	v, _ := c.Get(mw.IdentityKey)
+	resp, err := rpc.CommentList(context.Background(), &SocialService.CommentListRequest{
+		UserId:  v.(*ApiServer.User).Id,
+		VideoId: req.GetVideoId(),
+	})
+	log.Debugw("resp from rpc comment list", "resp", resp)
 
-	resp := new(ApiServer.VideoCommentListResponse)
+	if err != nil {
+		log.Errorw("rpc comment list failed", "err", err)
+		response.SendCommentListResponse(c, resp, err)
+	} else {
+		response.SendCommentListResponse(c, resp, errno.OK)
+	}
 
-	c.JSON(consts.StatusOK, resp)
 }

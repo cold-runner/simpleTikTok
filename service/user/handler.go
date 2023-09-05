@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/cold-runner/simpleTikTok/kitex_gen/BaseResponse"
 	"github.com/cold-runner/simpleTikTok/kitex_gen/UserService"
 	"github.com/cold-runner/simpleTikTok/pkg/errno"
 	"github.com/cold-runner/simpleTikTok/pkg/log"
@@ -109,7 +110,7 @@ func mConvertToRPCUser(uInfos []*model.UserInfo) []*UserService.User {
 }
 
 // ChangeUserFollowCount implements the UserServiceImpl interface.
-func (s *UserServiceImpl) ChangeUserFollowCount(ctx context.Context, req *UserService.ChangeUserFollowCountRequest) (resp *UserService.BaseResp, err error) {
+func (s *UserServiceImpl) ChangeUserFollowCount(ctx context.Context, req *UserService.ChangeUserFollowCountRequest) (resp *BaseResponse.BaseResp, err error) {
 	// TODO: Your code here...
 
 	if req.Id <= 0 || req.ToUserId < 0 || req.ActionType < 1 || req.ActionType > 2 {

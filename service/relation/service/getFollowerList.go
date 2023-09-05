@@ -20,7 +20,7 @@ func NewGetFollowerListService(ctx context.Context) *GetFollowerListService {
 }
 
 func (s *GetFollowerListService) GetUserFollowerList(req *RelationService.
-	RelationFollowerListRequest) ([]*RelationService.UserInfo, error) {
+	RelationFollowerListRequest) ([]*UserService.User, error) {
 	var wg sync.WaitGroup
 	wg.Add(2)
 	log.Debugw("GetUserFollowerList", "req", req)
@@ -103,10 +103,11 @@ func (s *GetFollowerListService) GetUserFollowerList(req *RelationService.
 	wg.Wait()
 
 	// 将用户信息和关注信息合并，写入到返回值中
-	userInfos := make([]*RelationService.UserInfo, 0)
+	userInfos := make([]*UserService.User, 0)
 	for _, u := range users {
 		_, isFollow := followSet[u.Id]
-		userInfos = append(userInfos, userConverToUserInfo(u, isFollow))
+		u.IsFollow = isFollow
+		userInfos = append(userInfos, u)
 	}
 	if len(users) != len(userInfos) {
 		log.Errorw("Error converting user info")

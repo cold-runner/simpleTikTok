@@ -2,25 +2,27 @@ package response
 
 import (
 	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/cold-runner/simpleTikTok/kitex_gen/BaseResponse"
 	"github.com/cold-runner/simpleTikTok/kitex_gen/RelationService"
+	"github.com/cold-runner/simpleTikTok/kitex_gen/UserService"
 	"github.com/cold-runner/simpleTikTok/pkg/errno"
 	"github.com/cold-runner/simpleTikTok/pkg/log"
 )
 
 type RelationActionResponse struct {
-	StatusCode int64  `json:"status_code"`
+	StatusCode int32  `json:"status_code"`
 	StatusMsg  string `json:"status_msg"`
 }
 
 type FollowListResponse struct {
-	StatusCode int64                       `json:"status_code"`
-	StatusMsg  string                      `json:"status_msg"`
-	UserList   []*RelationService.UserInfo `json:"user_list"`
+	StatusCode int32               `json:"status_code"`
+	StatusMsg  string              `json:"status_msg"`
+	UserList   []*UserService.User `json:"user_list"`
 }
 type FollowerListResponse struct {
-	StatusCode int64                       `json:"status_code"`
-	StatusMsg  string                      `json:"status_msg"`
-	UserList   []*RelationService.UserInfo `json:"user_list"`
+	StatusCode int32               `json:"status_code"`
+	StatusMsg  string              `json:"status_msg"`
+	UserList   []*UserService.User `json:"user_list"`
 }
 
 func SendRelationActionResponse(c *app.RequestContext, resp interface{}) {
@@ -52,7 +54,7 @@ func SendFollowListResponse(c *app.RequestContext,
 			err)
 		err := errno.MatchErr(err)
 		c.JSON(int(err.HTTP), RelationService.RelationFollowListResponse{
-			BaseResp: &RelationService.BaseResp{
+			BaseResp: &BaseResponse.BaseResp{
 				StatusCode: err.HTTP,
 				StatusMsg:  err.Message,
 			},
@@ -62,7 +64,7 @@ func SendFollowListResponse(c *app.RequestContext,
 		log.Debugw("Sending a no follow list response", "resp", resp)
 		// 处理用户没有关注的情况
 		c.JSON(200, FollowListResponse{
-			StatusCode: resp.BaseResp.GetStatusCode(),
+			StatusCode: resp.BaseResp.StatusCode,
 			StatusMsg:  "No follow yet!",
 			UserList:   nil,
 		})
@@ -82,7 +84,7 @@ func SendFollowerListResponse(c *app.RequestContext,
 		log.Errorw("api server rpc send follower list response failed", "err", err)
 		err := errno.MatchErr(err)
 		c.JSON(int(err.HTTP), RelationService.RelationFollowerListResponse{
-			BaseResp: &RelationService.BaseResp{
+			BaseResp: &BaseResponse.BaseResp{
 				StatusCode: err.HTTP,
 				StatusMsg:  err.Message,
 			},

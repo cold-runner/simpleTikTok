@@ -1,29 +1,12 @@
 syntax = "proto3";
 package video;
 option go_package ="VideoService";
-
-message BaseResp {
-  int64 status_code = 1; // 状态码，0-成功，其他值-失败
-  string status_msg = 2; //返回状态描述
-}
-
-message UserInfo {
-  int64 id = 1;
-  string name = 2;
-  int64 follow_count = 3;
-  int64 follower_count = 4;
-  bool is_follow = 5;
-  string  avatar = 6;
-  string background_image  = 7;
-  string signature = 8;
-  int64 total_favorited = 9;
-  int64 work_count = 10;
-  int64 favorite_count = 11;
-}
+import "idl/UserServer.proto";
+import "idl/BaseResp.proto";
 
 message Video {
   int64 id = 1;
-  UserInfo author = 2;
+  user.User author = 2;
   string play_url = 3;
   string cover_url = 4;
   int64 favorite_count = 5;
@@ -39,7 +22,7 @@ message VideoFeedRequest {
 }
 
 message VideoFeedResponse {
-  BaseResp base_resp = 1;
+  baseResp.BaseResp base_resp = 1;
   repeated Video video_list = 2;
   int64 next_time = 3; // 本次返回的视频中，发布最早的时间，作为下次请求时的latest_time
 }
@@ -52,7 +35,7 @@ message VideoPublishActionRequest {
 }
 
 message VideoPublishActionResponse {
-  BaseResp base_resp = 1;
+  baseResp.BaseResp base_resp = 1;
 }
 
 // 视频发布列表
@@ -62,7 +45,7 @@ message VideoPublishListRequest {
 }
 
 message VideoPublishListResponse {
-  BaseResp base_resp = 1;
+  baseResp.BaseResp base_resp = 1;
   repeated Video video_list = 2;
 }
 
@@ -84,7 +67,7 @@ message UpdateVideoCommentCountRequest {
 }
 
 message UpdateVideoInfoResponse {
-  BaseResp base_resp = 1;
+  baseResp.BaseResp base_resp = 1;
 }
 
 // 通过视频 id 获取作者 id
@@ -93,7 +76,7 @@ message GetAuthorIdByVideoIdRequest {
 }
 
 message GetAuthorIdByVideoIdResponse {
-  BaseResp base_resp = 1;
+  baseResp.BaseResp base_resp = 1;
   int64 author_id = 2;
 }
 

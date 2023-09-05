@@ -8,19 +8,19 @@ import (
 )
 
 type PublishActionResponse struct {
-	StatusCode int64  `json:"status_code"`
+	StatusCode int32  `json:"status_code"`
 	StatusMsg  string `json:"status_msg"`
 }
 
 type FeedResponse struct {
-	StatusCode int64                 `json:"status_code"`
+	StatusCode int32                 `json:"status_code"`
 	StatusMsg  string                `json:"status_msg"`
 	NextTime   int64                 `json:"next_time"`
 	VideoList  []*VideoService.Video `json:"video_list"`
 }
 
 type VideoPublishListResponse struct {
-	StatusCode int64                 `json:"status_code"`
+	StatusCode int32                 `json:"status_code"`
 	StatusMsg  string                `json:"status_msg"`
 	VideoList  []*VideoService.Video `json:"video_list"`
 }

@@ -3,13 +3,10 @@ package main
 import (
 	"context"
 	SocialService "github.com/cold-runner/simpleTikTok/kitex_gen/SocialService"
-	"github.com/cold-runner/simpleTikTok/kitex_gen/UserService"
 	"github.com/cold-runner/simpleTikTok/pkg/errno"
 	"github.com/cold-runner/simpleTikTok/pkg/log"
 	"github.com/cold-runner/simpleTikTok/service/social/response"
-	"github.com/cold-runner/simpleTikTok/service/social/rpc"
 	"github.com/cold-runner/simpleTikTok/service/social/service"
-	"time"
 )
 
 // SocialServiceImpl implements the last service interface defined in the IDL.
@@ -55,6 +52,7 @@ func (s *SocialServiceImpl) FavoriteList(ctx context.Context, req *SocialService
 func (s *SocialServiceImpl) CommentAction(ctx context.Context, req *SocialService.CommentActionRequest) (resp *SocialService.CommentActionResposne, err error) {
 	// TODO: Your code here..
 	actionType := req.GetActionType()
+
 	if actionType <= 0 || actionType > 2 {
 		log.Errorw("SocialServiceImpl.CommentAction", "err", errno.ErrInvalidParameter)
 	}
@@ -73,43 +71,14 @@ func (s *SocialServiceImpl) CommentAction(ctx context.Context, req *SocialServic
 	}
 	log.Debugw("comment action request success")
 	if actionType == 1 {
-		uid := req.GetUserId()
-		info, err := rpc.UserClient.GetUserInfo(ctx, &UserService.UserInfoRequest{
-			FromId: uid,
-			ToId:   uid,
-		})
-		user := info.GetUser()
+		comment, err := service.NewCommentService(ctx).GetUserLatestComment(
+			ctx, req.GetUserId(), commentModel, req.GetCommentText())
 		if err != nil {
-			log.Errorw("get user info failed", "err", err)
-			return nil, err
-		}
-		var commentUid int64
-		if commentModel == nil {
-			commentUid = 0
+			log.Errorw("get user latest comment failed", "err", err)
+			resp = response.BuildCommentActionResp(nil, err)
 		} else {
-			commentUid = commentModel.CommentId
+			resp = response.BuildCommentActionResp(comment, errno.OK)
 		}
-		// 处理上传好的 ID 问题
-		comment := &SocialService.Comment{
-			// id 为虚假 id 如果没有查到
-			Id: commentUid,
-			User: &SocialService.UserInfo{
-				Id:              user.GetId(),
-				Name:            user.GetName(),
-				FollowCount:     user.GetFollowCount(),
-				FollowerCount:   user.GetFollowerCount(),
-				IsFollow:        user.GetIsFollow(),
-				Avatar:          user.GetAvatar(),
-				BackgroundImage: user.GetBackgroundImage(),
-				Signature:       user.GetSignature(),
-				TotalFavorited:  user.GetTotalFavorited(),
-				WorkCount:       user.GetWorkCount(),
-				FavoriteCount:   user.GetFavoriteCount(),
-			},
-			Content:    req.GetCommentText(),
-			CreateDate: time.Now().Format("01-02"),
-		}
-		resp = response.BuildCommentActionResp(comment, errno.OK)
 	} else if actionType == 2 {
 		resp = response.BuildCommentActionResp(nil, errno.OK)
 	}
@@ -120,5 +89,15 @@ func (s *SocialServiceImpl) CommentAction(ctx context.Context, req *SocialServic
 // CommentList implements the SocialServiceImpl interface.
 func (s *SocialServiceImpl) CommentList(ctx context.Context, req *SocialService.CommentListRequest) (resp *SocialService.CommentListResponse, err error) {
 	// TODO: Your code here...
-	return
+	if req.GetVideoId() <= 0 || req.GetUserId() <= 0 {
+		log.Errorw("SocialServiceImpl.CommentList", "err", errno.ErrInvalidParameter)
+	}
+	commentList, err := service.NewCommentListService(ctx).GetCommentList(ctx, req)
+	if err != nil {
+		resp = response.BuildCommentListResp(nil, err)
+		return nil, err
+	} else {
+		resp = response.BuildCommentListResp(commentList, errno.OK)
+		return resp, nil
+	}
 }

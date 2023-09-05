@@ -43,7 +43,9 @@ func _listMw() []app.HandlerFunc {
 
 func _videocommentlistMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		mw.JwtMiddleware.MiddlewareFunc(),
+	}
 }
 
 func _favoriteMw() []app.HandlerFunc {

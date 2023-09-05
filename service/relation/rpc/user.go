@@ -2,12 +2,13 @@ package rpc
 
 import (
 	"context"
+	"github.com/cold-runner/simpleTikTok/kitex_gen/BaseResponse"
 	"github.com/cold-runner/simpleTikTok/kitex_gen/UserService"
 	"github.com/cold-runner/simpleTikTok/pkg/errno"
 	"github.com/cold-runner/simpleTikTok/pkg/log"
 )
 
-func UpdateUserFollowCount(ctx context.Context, req *UserService.ChangeUserFollowCountRequest) (*UserService.BaseResp,
+func UpdateUserFollowCount(ctx context.Context, req *UserService.ChangeUserFollowCountRequest) (*BaseResponse.BaseResp,
 	error) {
 
 	resp, err := userClient.ChangeUserFollowCount(ctx, req)

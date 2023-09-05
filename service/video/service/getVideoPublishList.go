@@ -39,20 +39,6 @@ func (s *VideoPublishListService) GetPublishVideoList(req *VideoService.
 
 	author := infoResp.User
 
-	authorInfo := &VideoService.UserInfo{
-		Id:              author.Id,
-		Name:            author.Name,
-		FollowCount:     author.FollowCount,
-		FollowerCount:   author.FollowerCount,
-		IsFollow:        author.IsFollow,
-		Avatar:          author.Avatar,
-		BackgroundImage: author.BackgroundImage,
-		Signature:       author.Signature,
-		TotalFavorited:  author.TotalFavorited,
-		WorkCount:       author.WorkCount,
-		FavoriteCount:   author.FavoriteCount,
-	}
-
 	// 获取视频列表
 	videos, err := dal.GetVideoListByUserId(s.ctx, req.ToUserId)
 	if err != nil {
@@ -62,7 +48,7 @@ func (s *VideoPublishListService) GetPublishVideoList(req *VideoService.
 	for _, video := range videos {
 		videoList = append(videoList, &VideoService.Video{
 			Id:            video.VideoID,
-			Author:        authorInfo,
+			Author:        author,
 			PlayUrl:       video.PlayUrl,
 			CoverUrl:      video.CoverUrl,
 			FavoriteCount: video.FavoriteCount,

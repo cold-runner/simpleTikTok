@@ -56,20 +56,8 @@ func (s *VideoListService) GetVideoListByIds(req *VideoService.
 	authorInfos := authorInfosResp.UserInfoList
 	for i := 0; i < len(videoList); i++ {
 		videos = append(videos, &VideoService.Video{
-			Id: videoList[i].VideoID,
-			Author: &VideoService.UserInfo{
-				Id:              authorInfos[i].Id,
-				Name:            authorInfos[i].Name,
-				FollowCount:     authorInfos[i].FollowCount,
-				FollowerCount:   authorInfos[i].FollowerCount,
-				IsFollow:        authorInfos[i].IsFollow,
-				Avatar:          authorInfos[i].Avatar,
-				BackgroundImage: authorInfos[i].BackgroundImage,
-				Signature:       authorInfos[i].Signature,
-				TotalFavorited:  authorInfos[i].TotalFavorited,
-				WorkCount:       authorInfos[i].WorkCount,
-				FavoriteCount:   authorInfos[i].FavoriteCount,
-			},
+			Id:            videoList[i].VideoID,
+			Author:        authorInfos[i],
 			PlayUrl:       videoList[i].PlayUrl,
 			CoverUrl:      videoList[i].CoverUrl,
 			FavoriteCount: videoList[i].FavoriteCount,

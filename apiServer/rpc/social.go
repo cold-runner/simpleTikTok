@@ -48,3 +48,15 @@ func CommentAction(ctx context.Context,
 	log.Debugw("api server rpc comment action success", "resp", resp)
 	return resp, nil
 }
+
+func CommentList(ctx context.Context, req *SocialService.CommentListRequest) (
+	*SocialService.CommentListResponse, error) {
+	log.Debugw("Calling rpc comment list request:", "req", req)
+	resp, err := socialClient.CommentList(ctx, req)
+	if err != nil {
+		log.Errorw("calling api server rpc comment list failed", "err", err)
+		return nil, err
+	}
+	log.Debugw("api server rpc comment list success", "resp", resp)
+	return resp, nil
+}

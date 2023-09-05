@@ -19,7 +19,7 @@ func NewGetUserInfoWithRelationService(ctx context.Context) *UserInfoService {
 	return &UserInfoService{ctx: ctx}
 }
 
-func (s *UserInfoService) GetUserInfoList(req *RelationService.QueryUserInfosWithRelationRequest) ([]*RelationService.UserInfo, error) {
+func (s *UserInfoService) GetUserInfoList(req *RelationService.QueryUserInfosWithRelationRequest) ([]*UserService.User, error) {
 	var wg sync.WaitGroup
 	wg.Add(2)
 
@@ -109,10 +109,11 @@ func (s *UserInfoService) GetUserInfoList(req *RelationService.QueryUserInfosWit
 	wg.Wait()
 
 	// 补充关注信息, 写入要返回的结果集
-	userInfos := make([]*RelationService.UserInfo, 0)
+	userInfos := make([]*UserService.User, 0)
 	for _, u := range users {
 		_, isFollow := followSet[u.Id]
-		userInfos = append(userInfos, userConverToUserInfo(u, isFollow))
+		u.IsFollow = isFollow
+		userInfos = append(userInfos, u)
 	}
 	if len(users) != len(userInfos) {
 		log.Errorw("Error converting user info")

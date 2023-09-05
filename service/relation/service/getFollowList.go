@@ -21,7 +21,7 @@ func NewGetFollowListService(ctx context.Context) *GetFollowListService {
 
 func (s *GetFollowListService) GetUserFollowList(req *RelationService.
 	RelationFollowListRequest) (
-	[]*RelationService.UserInfo, error) {
+	[]*UserService.User, error) {
 	var wg sync.WaitGroup
 	wg.Add(2)
 
@@ -111,34 +111,15 @@ func (s *GetFollowListService) GetUserFollowList(req *RelationService.
 	wg.Wait()
 
 	// 补充关注信息, 写入要返回的结果集
-	userInfos := make([]*RelationService.UserInfo, 0)
+	userInfos := make([]*UserService.User, 0)
 	for _, u := range users {
 		_, isFollow := followSet[u.Id]
-		userInfos = append(userInfos, userConverToUserInfo(u, isFollow))
+		u.IsFollow = isFollow
+		userInfos = append(userInfos, u)
 	}
 	if len(users) != len(userInfos) {
 		log.Errorw("Error converting user info")
 	}
 	log.Debugw("User info with follow info", "userInfos", userInfos)
 	return userInfos, nil
-}
-
-func userConverToUserInfo(user *UserService.User,
-	isFollow bool) *RelationService.UserInfo {
-	if user == nil {
-		return nil
-	}
-	return &RelationService.UserInfo{
-		Id:              user.Id,
-		Name:            user.Name,
-		FollowCount:     user.FollowCount,
-		FollowerCount:   user.FollowerCount,
-		IsFollow:        isFollow,
-		Avatar:          user.Avatar,
-		BackgroundImage: user.BackgroundImage,
-		Signature:       user.Signature,
-		TotalFavorited:  user.TotalFavorited,
-		WorkCount:       user.WorkCount,
-		FavoriteCount:   user.FavoriteCount,
-	}
 }

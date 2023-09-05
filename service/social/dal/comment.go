@@ -43,10 +43,45 @@ func GetUserLatestComment(ctx context.Context,
 	userId int64) (*model.VideoComment,
 	error) {
 	var comment model.VideoComment
-	err := DB.Where("author_id = ?", userId).Order("comment_id desc").
+	err := DB.WithContext(ctx).Where("author_id = ?",
+		userId).Order("comment_id desc").
 		First(&comment).Error
 	if err != nil {
 		return nil, err
 	}
 	return &comment, nil
+}
+
+func GetCommentListByVideoId(ctx context.Context,
+	videoId int64) ([]*model.VideoComment, []int64, error) {
+	var comments []*model.VideoComment
+	var authorIds []int64
+	err := DB.WithContext(ctx).Where("video_id = ?",
+		videoId).Find(&comments).Error
+	if err != nil {
+		return nil, nil, err
+	}
+	// 用于存储作者ID的map，可以帮助我们去重
+	authorIdMap := make(map[int64]bool)
+
+	for _, comment := range comments {
+		authorIdMap[comment.AuthorId] = true
+	}
+
+	// 从map中提取唯一的authorIds
+	for id := range authorIdMap {
+		authorIds = append(authorIds, id)
+	}
+	return comments, authorIds, nil
+}
+
+func GetAuthorByCommentID(ctx context.Context,
+	commentId int64) (int64, error) {
+	var comment model.VideoComment
+	err := DB.WithContext(ctx).Where("comment_id = ?",
+		commentId).First(&comment).Error
+	if err != nil {
+		return -1, err
+	}
+	return comment.AuthorId, nil
 }

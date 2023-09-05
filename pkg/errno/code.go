@@ -48,4 +48,7 @@ var (
 		"UpdateError", Message: "Error occurred while updating the database."}
 	// ErrRedisNotInitialized ErrInvalidDelete 表示redis数据库未初始化连接.
 	ErrRedisNotInitialized = &Errno{HTTP: 500, Code: "RedisNotInitialized", Message: "Redis not initialized."}
+
+	ErrInvalidDeleteComment = &Errno{HTTP: 400, Code: "InvalidParameter",
+		Message: "you can't delete this comment."}
 )

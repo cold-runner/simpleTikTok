@@ -4,7 +4,7 @@ package ApiServer;
 
 option go_package = "ApiServer";
 
-import "api.proto";
+import "idl/api.proto";
 
 message BaseResp {
   int32 status_code = 1; // 状态码，0-成功，其他值-失败

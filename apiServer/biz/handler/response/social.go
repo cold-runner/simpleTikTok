@@ -9,19 +9,25 @@ import (
 )
 
 type FavoriteActionResponse struct {
-	StatusCode int64  `json:"status_code"`
+	StatusCode int32  `json:"status_code"`
 	StatusMsg  string `json:"status_msg"`
 }
 type FavoriteListResponse struct {
-	StatusCode int64                 `json:"status_code"`
+	StatusCode int32                 `json:"status_code"`
 	StatusMsg  string                `json:"status_msg"`
 	VideoList  []*VideoService.Video `json:"video_list"`
 }
 
 type CommentActionResponse struct {
-	StatusCode int64                  `json:"status_code"`
+	StatusCode int32                  `json:"status_code"`
 	StatusMsg  string                 `json:"status_msg"`
 	Comment    *SocialService.Comment `json:"comment"`
+}
+
+type CommentListResponse struct {
+	StatusCode  int32                    `json:"status_code"`
+	StatusMsg   string                   `json:"status_msg"`
+	CommentList []*SocialService.Comment `json:"comment_list"`
 }
 
 func SendFavoriteActionResponse(c *app.RequestContext, err error) {
@@ -70,6 +76,31 @@ func SendCommentActionResponse(c *app.RequestContext, resp *SocialService.Commen
 			StatusCode: Err.HTTP,
 			StatusMsg:  Err.Message,
 			Comment:    nil,
+		})
+	}
+}
+
+func SendCommentListResponse(c *app.RequestContext,
+	resp *SocialService.CommentListResponse, err error) {
+	Err := errno.MatchErr(err)
+
+	if (Err.HTTP == 0 || Err.HTTP == 200) && resp.CommentList != nil {
+		c.JSON(consts.StatusOK, CommentListResponse{
+			StatusCode:  0,
+			StatusMsg:   "Get Comment List Success!",
+			CommentList: resp.GetCommentList(),
+		})
+	} else if (Err.HTTP == 0 || Err.HTTP == 200) && resp.CommentList != nil {
+		c.JSON(consts.StatusOK, CommentListResponse{
+			StatusCode:  0,
+			StatusMsg:   "Get Comment List Success! But no comment",
+			CommentList: nil,
+		})
+	} else {
+		c.JSON(int(Err.HTTP), CommentListResponse{
+			StatusCode:  Err.HTTP,
+			StatusMsg:   Err.Message,
+			CommentList: nil,
 		})
 	}
 }

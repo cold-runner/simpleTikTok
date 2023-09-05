@@ -63,22 +63,9 @@ func (s *VideoFeedService) VideoFeed(req *VideoService.VideoFeedRequest) (
 		authorInfos := infoResp.Users
 
 		for i := 0; i < len(videos) && i < len(authorInfos); i++ {
-			author := &VideoService.UserInfo{
-				Id:              authorInfos[i].Id,
-				Name:            authorInfos[i].Name,
-				Avatar:          authorInfos[i].Avatar,
-				BackgroundImage: authorInfos[i].BackgroundImage,
-				Signature:       authorInfos[i].Signature,
-				FollowCount:     authorInfos[i].FollowCount,
-				FollowerCount:   authorInfos[i].FollowerCount,
-				TotalFavorited:  authorInfos[i].TotalFavorited,
-				WorkCount:       authorInfos[i].WorkCount,
-				FavoriteCount:   authorInfos[i].FavoriteCount,
-				IsFollow:        false,
-			}
 			videoList = append(videoList, &VideoService.Video{
 				Id:            videos[i].VideoID,
-				Author:        author,
+				Author:        authorInfos[i],
 				PlayUrl:       videos[i].PlayUrl,
 				CoverUrl:      videos[i].CoverUrl,
 				FavoriteCount: videos[i].FavoriteCount,
@@ -101,22 +88,9 @@ func (s *VideoFeedService) VideoFeed(req *VideoService.VideoFeedRequest) (
 			return nil, 0, err
 		}
 		for i := 0; i < len(videos) && i < len(authorInfos); i++ {
-			author := &VideoService.UserInfo{
-				Id:              authorInfos[i].Id,
-				Name:            authorInfos[i].Name,
-				Avatar:          authorInfos[i].Avatar,
-				BackgroundImage: authorInfos[i].BackgroundImage,
-				Signature:       authorInfos[i].Signature,
-				FollowCount:     authorInfos[i].FollowCount,
-				FollowerCount:   authorInfos[i].FollowerCount,
-				TotalFavorited:  authorInfos[i].TotalFavorited,
-				WorkCount:       authorInfos[i].WorkCount,
-				FavoriteCount:   authorInfos[i].FavoriteCount,
-				IsFollow:        authorInfos[i].IsFollow,
-			}
 			videoList = append(videoList, &VideoService.Video{
 				Id:            videos[i].VideoID,
-				Author:        author,
+				Author:        authorInfos[i],
 				PlayUrl:       videos[i].PlayUrl,
 				CoverUrl:      videos[i].CoverUrl,
 				FavoriteCount: videos[i].FavoriteCount,

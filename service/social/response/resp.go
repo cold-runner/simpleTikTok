@@ -2,28 +2,29 @@ package response
 
 import (
 	"errors"
+	"github.com/cold-runner/simpleTikTok/kitex_gen/BaseResponse"
 	"github.com/cold-runner/simpleTikTok/kitex_gen/SocialService"
 	"github.com/cold-runner/simpleTikTok/kitex_gen/VideoService"
 	"github.com/cold-runner/simpleTikTok/pkg/errno"
 )
 
 // 封装基本报文格式
-func newBaseResp(err *errno.Errno) *SocialService.BaseResp {
+func newBaseResp(err *errno.Errno) *BaseResponse.BaseResp {
 	if err.HTTP == 200 || err.HTTP == 0 {
-		return &SocialService.BaseResp{
+		return &BaseResponse.BaseResp{
 			StatusCode: 0,
 			StatusMsg:  err.Message,
 		}
 	} else {
-		return &SocialService.BaseResp{
+		return &BaseResponse.BaseResp{
 			StatusCode: err.HTTP,
 			StatusMsg:  err.Message,
 		}
 	}
 }
 
-func BuildBaseResp(err error) *SocialService.BaseResp {
-	var baseResp *SocialService.BaseResp
+func BuildBaseResp(err error) *BaseResponse.BaseResp {
+	var baseResp *BaseResponse.BaseResp
 	// 如果没有错误，返回成功
 	if err == nil {
 		baseResp = newBaseResp(errno.OK)
@@ -71,5 +72,13 @@ func BuildCommentActionResp(comment *SocialService.Comment, err error) *SocialSe
 			Comment:  comment,
 		}
 	}
+}
 
+func BuildCommentListResp(commentList []*SocialService.Comment,
+	err error) *SocialService.CommentListResponse {
+	baseResp := BuildBaseResp(err)
+	return &SocialService.CommentListResponse{
+		BaseResp:    baseResp,
+		CommentList: commentList,
+	}
 }

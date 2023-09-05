@@ -8,7 +8,7 @@ import (
 
 // RegisterResponse 注册用户响应报文
 type RegisterResponse struct {
-	StatusCode int64  `json:"status_code"`
+	StatusCode int32  `json:"status_code"`
 	StatusMsg  string `json:"status_msg"`
 	UserId     int64  `json:"user_id"`
 	Token      string `json:"token"`
@@ -30,7 +30,7 @@ type userInfo struct {
 
 // UserInfoResponse 获取用户信息响应报文
 type UserInfoResponse struct {
-	StatusCode int64    `json:"status_code"`
+	StatusCode int32    `json:"status_code"`
 	StatusMsg  string   `json:"status_msg"`
 	User       userInfo `json:"user"`
 }

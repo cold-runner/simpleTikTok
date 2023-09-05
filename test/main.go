@@ -1,10 +1,7 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	_ "github.com/cold-runner/simpleTikTok/kitex_gen/UserService"
-	//"github.com/dtm-labs/client/dtmcli"
 )
 
 type str1 struct {
@@ -20,17 +17,18 @@ type str2 struct {
 
 func main() {
 
-	data, _ := json.Marshal(&str1{
-		UserId:     1,
-		ToUserId:   2,
-		ActionType: 3,
-	})
-	var req interface{}
-	err := json.Unmarshal(data, &req)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(req)
+	//data, _ := json.Marshal(&str1{
+	//	UserId:     1,
+	//	ToUserId:   2,
+	//	ActionType: 3,
+	//})
+	//var req interface{}
+	//err := json.Unmarshal(data, &req)
+	//if err != nil {
+	//	fmt.Println(err)
+	////}
+	//encryption.Encrypt()
+	//fmt.Println(req)
 }
 
 //

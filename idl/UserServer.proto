@@ -1,11 +1,7 @@
 syntax = "proto3";
 package user;
 option go_package ="UserService";
-
-message BaseResp {
-  int64 status_code = 1; // 状态码，0-成功，其他值-失败
-  string status_msg = 2; //返回状态描述
-}
+import "idl/BaseResp.proto";
 
 message User {
   int64 id = 1;
@@ -28,7 +24,7 @@ message UserRegisterRequest {
 }
 
 message UserRegisterResponse {
-  BaseResp base_resp = 1;
+  baseResp.BaseResp base_resp = 1;
   int64 id = 2;
 }
 
@@ -39,7 +35,7 @@ message UserLoginRequest {
 }
 
 message UserLoginResponse {
-  BaseResp base_resp = 1;
+  baseResp.BaseResp base_resp = 1;
   int64 id = 2;
 }
 
@@ -50,7 +46,7 @@ message UserInfoRequest {
 }
 
 message UserInfoResponse {
-  BaseResp base_resp = 1;
+  baseResp.BaseResp base_resp = 1;
   User user = 2;
 }
 
@@ -66,7 +62,7 @@ message MGetUserInfoRequest {
 }
 
 message MGetUserInfoResponse {
-  BaseResp base_resp = 1;
+  baseResp.BaseResp base_resp = 1;
   repeated User users = 2;
 }
 
@@ -89,7 +85,7 @@ message ChangeUserFavoriteCountRequest {
 }
 
 message UpdateUserInfoResponse {
-  BaseResp base_resp = 1;
+  baseResp.BaseResp base_resp = 1;
 }
 
 service UserService {
@@ -98,7 +94,7 @@ service UserService {
   rpc GetUserInfo(UserInfoRequest) returns (UserInfoResponse) {}
   rpc MGetUserInfo(MGetUserInfoRequest) returns(MGetUserInfoResponse) {}
   // 用户信息更新相关服务
-  rpc ChangeUserFollowCount(ChangeUserFollowCountRequest) returns (BaseResp) {}
+  rpc ChangeUserFollowCount(ChangeUserFollowCountRequest) returns (baseResp.BaseResp) {}
   rpc ChangeUserTotalFavoritedCount(ChangeUserTotalFavoritedCountRequest) returns (UpdateUserInfoResponse) {}
   rpc ChangeUserWorkCount(ChangeUserWorkCountRequest) returns (UpdateUserInfoResponse) {}
   rpc ChangeUserFavoriteCount(ChangeUserFavoriteCountRequest) returns (UpdateUserInfoResponse) {}
