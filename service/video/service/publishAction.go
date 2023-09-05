@@ -2,9 +2,11 @@ package service
 
 import (
 	"context"
+	"github.com/cold-runner/simpleTikTok/kitex_gen/UserService"
 	"github.com/cold-runner/simpleTikTok/kitex_gen/VideoService"
 	"github.com/cold-runner/simpleTikTok/pkg/log"
 	"github.com/cold-runner/simpleTikTok/service/video/mq"
+	"github.com/cold-runner/simpleTikTok/service/video/rpc"
 )
 
 type PublishActionService struct {
@@ -22,7 +24,19 @@ func (s *PublishActionService) PublishAction(req *VideoService.
 		Data:     req.Data,
 		Title:    req.Title,
 	}
-	err := mq.VideoProducer.Publish(request)
+
+	_, err := rpc.UserClient.ChangeUserWorkCount(context.Background(),
+		&UserService.ChangeUserWorkCountRequest{
+			Id:         req.GetUserId(),
+			ActionType: 1,
+		})
+
+	if err != nil {
+		log.Errorw("failed to update user work count", "err", err)
+		return err
+	}
+
+	err = mq.VideoProducer.Publish(request)
 	if err != nil {
 		log.Errorw("VideoServer failed to publish message", "err", err)
 	}
