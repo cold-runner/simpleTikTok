@@ -27,17 +27,22 @@ func UploadVideo(ctx context.Context, videoName string, videoData []byte) error 
 func BuildVideoURL(videoName string) string {
 	// 构建并返回视频的访问 URL
 	hostAddress := viper.GetString("minio.host")
+	//localAddress := viper.GetString("minio.localhost")
+
 	port := viper.GetString("minio.port")
 	videoURL := fmt.Sprintf("http://%s:%s/%s/%s", hostAddress, port, VideoBucketName, videoName)
-	//videoURL := minioClient.EndpointURL().String() + "/" + VideoBucketName + "/" + videoName
+	//videoURLLocal := fmt.Sprintf("http://%s:%s/%s/%s", localAddress, port, VideoBucketName, videoName)
+	//return videoURL, videoURLLocal
 	return videoURL
 }
 
 func BuildImageURL(videoName string) string {
 	hostAddress := viper.GetString("minio.host")
+	//localAddress := viper.GetString("minio.localhost")
 	port := viper.GetString("minio.port")
 	imageURL := fmt.Sprintf("http://%s:%s/%s/%s", hostAddress, port, ImageBucketName, videoName)
-	//imageURL := minioClient.EndpointURL().String() + "/" + ImageBucketName + "/" + videoName
+	//imageURLLocal := fmt.Sprintf("http://%s:%s/%s/%s", localAddress, port, ImageBucketName, videoName)
+	//return imageURL, imageURLLocal
 	return imageURL
 }
 

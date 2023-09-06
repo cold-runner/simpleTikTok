@@ -3,11 +3,13 @@ package service
 import (
 	"context"
 	"github.com/cold-runner/simpleTikTok/kitex_gen/RelationService"
+	"github.com/cold-runner/simpleTikTok/kitex_gen/SocialService"
 	"github.com/cold-runner/simpleTikTok/kitex_gen/VideoService"
 	"github.com/cold-runner/simpleTikTok/pkg/log"
 	"github.com/cold-runner/simpleTikTok/service/video/dal"
 	"github.com/cold-runner/simpleTikTok/service/video/dal/model"
 	"github.com/cold-runner/simpleTikTok/service/video/rpc"
+	"github.com/spf13/viper"
 	"sync"
 )
 
@@ -52,18 +54,35 @@ func (s *VideoListService) GetVideoListByIds(req *VideoService.
 	if err != nil {
 		log.Errorw("VideoListService failed to get user info", "err", err)
 	}
-
+	publicHost := viper.GetString("minio.public.host")
 	authorInfos := authorInfosResp.UserInfoList
+
+	// 获取视频点赞信息
+	resp, err := rpc.SocialClient.GetFavoriteVidList(s.ctx,
+		&SocialService.GetFavoriteVideoByUidRequest{
+			UserId: req.UserId,
+		})
+	if err != nil {
+		log.Errorw("VideoFeedService failed to get favorite videos")
+	}
+
+	// 将用户 id 转化为集合方便查询
+	favoriteSet := make(map[int64]struct{})
+	for _, vid := range resp.GetFavoriteIdList() {
+		favoriteSet[vid] = struct{}{}
+	}
 	for i := 0; i < len(videoList); i++ {
+		_, isFavorite := favoriteSet[videoList[i].VideoID]
+
 		videos = append(videos, &VideoService.Video{
 			Id:            videoList[i].VideoID,
 			Author:        authorInfos[i],
-			PlayUrl:       videoList[i].PlayUrl,
-			CoverUrl:      videoList[i].CoverUrl,
+			PlayUrl:       GetPublicURL(videoList[i].PlayUrl, publicHost),
+			CoverUrl:      GetPublicURL(videoList[i].CoverUrl, publicHost),
 			FavoriteCount: videoList[i].FavoriteCount,
 			CommentCount:  videoList[i].CommentCount,
-			//IsFavorite:    false,
-			Title: videoList[i].Title,
+			IsFavorite:    isFavorite,
+			Title:         videoList[i].Title,
 		})
 	}
 	log.Debugw("VideoListService get video list successfully.")

@@ -22,10 +22,11 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "SocialService"
 	handlerType := (*SocialService.SocialService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"FavoriteAction": kitex.NewMethodInfo(favoriteActionHandler, newFavoriteActionArgs, newFavoriteActionResult, false),
-		"CommentAction":  kitex.NewMethodInfo(commentActionHandler, newCommentActionArgs, newCommentActionResult, false),
-		"FavoriteList":   kitex.NewMethodInfo(favoriteListHandler, newFavoriteListArgs, newFavoriteListResult, false),
-		"CommentList":    kitex.NewMethodInfo(commentListHandler, newCommentListArgs, newCommentListResult, false),
+		"FavoriteAction":     kitex.NewMethodInfo(favoriteActionHandler, newFavoriteActionArgs, newFavoriteActionResult, false),
+		"CommentAction":      kitex.NewMethodInfo(commentActionHandler, newCommentActionArgs, newCommentActionResult, false),
+		"FavoriteList":       kitex.NewMethodInfo(favoriteListHandler, newFavoriteListArgs, newFavoriteListResult, false),
+		"CommentList":        kitex.NewMethodInfo(commentListHandler, newCommentListArgs, newCommentListResult, false),
+		"GetFavoriteVidList": kitex.NewMethodInfo(getFavoriteVidListHandler, newGetFavoriteVidListArgs, newGetFavoriteVidListResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "social",
@@ -653,6 +654,159 @@ func (p *CommentListResult) GetResult() interface{} {
 	return p.Success
 }
 
+func getFavoriteVidListHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(SocialService.GetFavoriteVideoByUidRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(SocialService.SocialService).GetFavoriteVidList(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *GetFavoriteVidListArgs:
+		success, err := handler.(SocialService.SocialService).GetFavoriteVidList(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*GetFavoriteVidListResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newGetFavoriteVidListArgs() interface{} {
+	return &GetFavoriteVidListArgs{}
+}
+
+func newGetFavoriteVidListResult() interface{} {
+	return &GetFavoriteVidListResult{}
+}
+
+type GetFavoriteVidListArgs struct {
+	Req *SocialService.GetFavoriteVideoByUidRequest
+}
+
+func (p *GetFavoriteVidListArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(SocialService.GetFavoriteVideoByUidRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *GetFavoriteVidListArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *GetFavoriteVidListArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *GetFavoriteVidListArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in GetFavoriteVidListArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *GetFavoriteVidListArgs) Unmarshal(in []byte) error {
+	msg := new(SocialService.GetFavoriteVideoByUidRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var GetFavoriteVidListArgs_Req_DEFAULT *SocialService.GetFavoriteVideoByUidRequest
+
+func (p *GetFavoriteVidListArgs) GetReq() *SocialService.GetFavoriteVideoByUidRequest {
+	if !p.IsSetReq() {
+		return GetFavoriteVidListArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *GetFavoriteVidListArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *GetFavoriteVidListArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type GetFavoriteVidListResult struct {
+	Success *SocialService.GetFavoriteVideoByUidResponse
+}
+
+var GetFavoriteVidListResult_Success_DEFAULT *SocialService.GetFavoriteVideoByUidResponse
+
+func (p *GetFavoriteVidListResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(SocialService.GetFavoriteVideoByUidResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *GetFavoriteVidListResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *GetFavoriteVidListResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *GetFavoriteVidListResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in GetFavoriteVidListResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *GetFavoriteVidListResult) Unmarshal(in []byte) error {
+	msg := new(SocialService.GetFavoriteVideoByUidResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *GetFavoriteVidListResult) GetSuccess() *SocialService.GetFavoriteVideoByUidResponse {
+	if !p.IsSetSuccess() {
+		return GetFavoriteVidListResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *GetFavoriteVidListResult) SetSuccess(x interface{}) {
+	p.Success = x.(*SocialService.GetFavoriteVideoByUidResponse)
+}
+
+func (p *GetFavoriteVidListResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *GetFavoriteVidListResult) GetResult() interface{} {
+	return p.Success
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -698,6 +852,16 @@ func (p *kClient) CommentList(ctx context.Context, Req *SocialService.CommentLis
 	_args.Req = Req
 	var _result CommentListResult
 	if err = p.c.Call(ctx, "CommentList", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetFavoriteVidList(ctx context.Context, Req *SocialService.GetFavoriteVideoByUidRequest) (r *SocialService.GetFavoriteVideoByUidResponse, err error) {
+	var _args GetFavoriteVidListArgs
+	_args.Req = Req
+	var _result GetFavoriteVidListResult
+	if err = p.c.Call(ctx, "GetFavoriteVidList", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

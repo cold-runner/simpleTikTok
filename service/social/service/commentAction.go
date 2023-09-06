@@ -26,17 +26,19 @@ func NewCommentService(ctx context.Context) *CommentService {
 func (s *CommentService) CommentAction(ctx context.Context,
 	req *SocialService.CommentActionRequest) (*model.VideoComment, error) {
 	actionType := req.GetActionType()
-	authorID, err := dal.GetAuthorByCommentID(ctx, req.GetCommentId())
-	if err != nil {
-		log.Errorw("get author by comment id failed", "err", err)
-		return nil, err
-	}
-	if authorID != req.UserId {
-		log.Errorw("can not delete other's comment", "err", err)
-		return nil, errno.ErrInvalidDeleteComment
+	if actionType == 2 {
+		authorID, err := dal.GetAuthorByCommentID(ctx, req.GetCommentId())
+		if err != nil {
+			log.Errorw("get author by comment id failed", "err", err)
+			return nil, err
+		}
+		if authorID != req.UserId {
+			log.Errorw("can not delete other's comment", "err", err)
+			return nil, errno.ErrInvalidDeleteComment
+		}
 	}
 
-	err = dtm.CommentActionRequest(&dtm.CommentRequestToDTM{
+	err := dtm.CommentActionRequest(&dtm.CommentRequestToDTM{
 		CommentText: req.GetCommentText(),
 		VideoId:     req.GetVideoId(),
 		UserId:      req.GetUserId(),

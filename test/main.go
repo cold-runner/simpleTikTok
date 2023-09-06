@@ -1,7 +1,10 @@
 package main
 
 import (
+	"fmt"
 	_ "github.com/cold-runner/simpleTikTok/kitex_gen/UserService"
+	"github.com/jackpal/gateway"
+	"net"
 )
 
 type str1 struct {
@@ -16,42 +19,43 @@ type str2 struct {
 }
 
 func main() {
+	gatewayIP, err := gateway.DiscoverGateway()
+	if err != nil {
+		fmt.Println("Error finding gateway:", err)
+		return
+	}
 
-	//data, _ := json.Marshal(&str1{
-	//	UserId:     1,
-	//	ToUserId:   2,
-	//	ActionType: 3,
-	//})
-	//var req interface{}
-	//err := json.Unmarshal(data, &req)
-	//if err != nil {
-	//	fmt.Println(err)
-	////}
-	//encryption.Encrypt()
-	//fmt.Println(req)
+	fmt.Println("Gateway / Router IP Address:", gatewayIP)
+
+	localIPs, err := localIPs(gatewayIP)
+	if err != nil {
+		fmt.Println("Error finding local IP addresses:", err)
+		return
+	}
+
+	for _, ip := range localIPs {
+		fmt.Println("Local IP Address:", ip)
+	}
 }
 
-//
-//type FavoriteService struct{}
-//
-//func NewFavoriteService() *FavoriteService {
-//	return &FavoriteService{}
-//}
-//
-//func (s *FavoriteService) FavoriteAction(videoID int64, userID int64) {
-//	dtmcli.Logf("beginning a dtm saga business")
-//	// 初始化DTM客户端
-//	//DtmServer := "http://localhost:36789/api/dtmsvr"
-//	//dtm := dtmcli.NewSaga(DtmServer, "1").
-//	//	Add()
-//	//dtmcli.
-//	//// 创建Saga
-//	//
-//	//// 提交Saga
-//	//err := saga.Submit()
-//	//if err != nil {
-//	//	log.Fatalf("saga submit failed: %v", err)
-//	//}
-//	//
-//	dtmgrpc.NewSagaGrpc().Add()
-//}
+func localIPs(gatewayIP net.IP) ([]net.IP, error) {
+	addrs, err := net.InterfaceAddrs()
+	if err != nil {
+		return nil, err
+	}
+
+	var ips []net.IP
+	for _, addr := range addrs {
+		ipNet, ok := addr.(*net.IPNet)
+		if !ok {
+			continue
+		}
+		ip := ipNet.IP.To4()
+		if ip == nil || ip.IsLoopback() || ip.Equal(gatewayIP) {
+			continue
+		}
+		ips = append(ips, ip)
+	}
+
+	return ips, nil
+}

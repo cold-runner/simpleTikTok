@@ -15,6 +15,7 @@ type Client interface {
 	CommentAction(ctx context.Context, Req *SocialService.CommentActionRequest, callOptions ...callopt.Option) (r *SocialService.CommentActionResposne, err error)
 	FavoriteList(ctx context.Context, Req *SocialService.FavoriteListRequest, callOptions ...callopt.Option) (r *SocialService.FavoriteListResponse, err error)
 	CommentList(ctx context.Context, Req *SocialService.CommentListRequest, callOptions ...callopt.Option) (r *SocialService.CommentListResponse, err error)
+	GetFavoriteVidList(ctx context.Context, Req *SocialService.GetFavoriteVideoByUidRequest, callOptions ...callopt.Option) (r *SocialService.GetFavoriteVideoByUidResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -64,4 +65,9 @@ func (p *kSocialServiceClient) FavoriteList(ctx context.Context, Req *SocialServ
 func (p *kSocialServiceClient) CommentList(ctx context.Context, Req *SocialService.CommentListRequest, callOptions ...callopt.Option) (r *SocialService.CommentListResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.CommentList(ctx, Req)
+}
+
+func (p *kSocialServiceClient) GetFavoriteVidList(ctx context.Context, Req *SocialService.GetFavoriteVideoByUidRequest, callOptions ...callopt.Option) (r *SocialService.GetFavoriteVideoByUidResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetFavoriteVidList(ctx, Req)
 }

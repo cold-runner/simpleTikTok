@@ -103,8 +103,10 @@ minio:
   bucket:
     video: videos
     image: images
-  host: 192.168.68.62
+  host: localhost
   port: 9000
+  public:
+    host: 120.40.6.33
 
 # DTM 服务相关配置
 dtm:

@@ -101,3 +101,19 @@ func (s *SocialServiceImpl) CommentList(ctx context.Context, req *SocialService.
 		return resp, nil
 	}
 }
+
+// GetFavoriteVidList implements the SocialServiceImpl interface.
+func (s *SocialServiceImpl) GetFavoriteVidList(ctx context.Context, req *SocialService.GetFavoriteVideoByUidRequest) (resp *SocialService.GetFavoriteVideoByUidResponse, err error) {
+	// TODO: Your code here...
+	if req.GetUserId() <= 0 {
+		log.Errorw("SocialServiceImpl.GetFavoriteVidList", "err", errno.ErrInvalidParameter)
+	}
+	vidList, err := service.NewFavoriteVIDService(ctx).GetFavoriteIDsByUserID(ctx, req)
+	if err != nil {
+		resp = response.BuildFavoriteIdList(nil, nil)
+		return resp, err
+	} else {
+		resp = response.BuildFavoriteIdList(vidList, err)
+		return resp, nil
+	}
+}

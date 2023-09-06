@@ -82,3 +82,16 @@ func BuildCommentListResp(commentList []*SocialService.Comment,
 		CommentList: commentList,
 	}
 }
+
+func BuildFavoriteIdList(vidList []int64, err error) *SocialService.
+	GetFavoriteVideoByUidResponse {
+	if err == nil {
+		return &SocialService.GetFavoriteVideoByUidResponse{
+			FavoriteIdList: vidList,
+		}
+	} else {
+		return &SocialService.GetFavoriteVideoByUidResponse{
+			FavoriteIdList: nil,
+		}
+	}
+}

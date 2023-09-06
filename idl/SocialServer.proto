@@ -60,9 +60,20 @@ message CommentListResponse {
   repeated Comment comment_list = 2;
 }
 
+// 获取用户的点赞视频列表
+message GetFavoriteVideoByUidRequest {
+  int64 user_id = 1;
+}
+
+message GetFavoriteVideoByUidResponse {
+  repeated int64 favorite_id_list = 1;
+}
+
 service SocialService {
   rpc FavoriteAction(FavoriteActionRequest) returns (FavoriteActionResponse) {}
   rpc CommentAction(CommentActionRequest) returns (CommentActionResposne) {}
   rpc FavoriteList(FavoriteListRequest) returns (FavoriteListResponse) {}
   rpc CommentList(CommentListRequest) returns (CommentListResponse) {}
+  rpc GetFavoriteVidList(GetFavoriteVideoByUidRequest) returns
+      (GetFavoriteVideoByUidResponse) {}
 }
