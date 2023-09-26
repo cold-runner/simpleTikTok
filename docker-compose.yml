@@ -1,0 +1,52 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: tiktok1234
+      MYSQL_DATABASE: tiktok
+      MYSQL_USER: tiktokAdmin
+      MYSQL_PASSWORD: tiktok1234
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  etcd:
+    image: bitnami/etcd:latest
+    environment:
+      ALLOW_NONE_AUTHENTICATION: 'yes'
+    ports:
+      - "2379:2379"
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:latest
+    ports:
+      - "5672:5672"
+
+  minio:
+    image: minio/minio:latest
+    environment:
+      MINIO_ACCESS_KEY: tiktok
+      MINIO_SECRET_KEY: tiktokadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - /Users/slone/Desktop/simpleTikTok/data:/data # 挂载本地文件夹映射
+    command: server /data --console-address ":9001"
+
+  dtm:
+    image: yedf/dtm:latest
+    ports:
+      - "36789:36789"
+    environment:
+      DTM_SERVER_ADDR: http://localhost:36789/api/dtmsvr
+
+volumes:
+  db_data: {}

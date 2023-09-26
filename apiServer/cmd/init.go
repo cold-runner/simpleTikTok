@@ -10,6 +10,6 @@ import (
 func Init() {
 	config.InitViperConfig()
 	log.Init("log-default")
-	rpc.InitUserRPC()
+	rpc.InitRpc()
 	mw.InitJwt()
 }

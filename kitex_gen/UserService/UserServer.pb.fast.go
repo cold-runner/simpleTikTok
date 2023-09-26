@@ -5,47 +5,13 @@ package UserService
 import (
 	fmt "fmt"
 	fastpb "github.com/cloudwego/fastpb"
+	BaseResponse "github.com/cold-runner/simpleTikTok/kitex_gen/BaseResponse"
 )
 
 var (
 	_ = fmt.Errorf
 	_ = fastpb.Skip
 )
-
-func (x *BaseResp) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
-	switch number {
-	case 1:
-		offset, err = x.fastReadField1(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
-	case 2:
-		offset, err = x.fastReadField2(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
-	default:
-		offset, err = fastpb.Skip(buf, _type, number)
-		if err != nil {
-			goto SkipFieldError
-		}
-	}
-	return offset, nil
-SkipFieldError:
-	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
-ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_BaseResp[number], err)
-}
-
-func (x *BaseResp) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	x.StatusCode, offset, err = fastpb.ReadInt64(buf, _type)
-	return offset, err
-}
-
-func (x *BaseResp) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	x.StatusMsg, offset, err = fastpb.ReadString(buf, _type)
-	return offset, err
-}
 
 func (x *User) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
@@ -233,7 +199,7 @@ ReadFieldError:
 }
 
 func (x *UserRegisterResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	var v BaseResp
+	var v BaseResponse.BaseResp
 	offset, err = fastpb.ReadMessage(buf, _type, &v)
 	if err != nil {
 		return offset, err
@@ -308,7 +274,7 @@ ReadFieldError:
 }
 
 func (x *UserLoginResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	var v BaseResp
+	var v BaseResponse.BaseResp
 	offset, err = fastpb.ReadMessage(buf, _type, &v)
 	if err != nil {
 		return offset, err
@@ -322,29 +288,343 @@ func (x *UserLoginResponse) fastReadField2(buf []byte, _type int8) (offset int, 
 	return offset, err
 }
 
-func (x *BaseResp) FastWrite(buf []byte) (offset int) {
-	if x == nil {
-		return offset
+func (x *UserInfoRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
 	}
-	offset += x.fastWriteField1(buf[offset:])
-	offset += x.fastWriteField2(buf[offset:])
-	return offset
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_UserInfoRequest[number], err)
 }
 
-func (x *BaseResp) fastWriteField1(buf []byte) (offset int) {
-	if x.StatusCode == 0 {
-		return offset
-	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetStatusCode())
-	return offset
+func (x *UserInfoRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.FromId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
 }
 
-func (x *BaseResp) fastWriteField2(buf []byte) (offset int) {
-	if x.StatusMsg == "" {
-		return offset
+func (x *UserInfoRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	x.ToId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *UserInfoResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
 	}
-	offset += fastpb.WriteString(buf[offset:], 2, x.GetStatusMsg())
-	return offset
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_UserInfoResponse[number], err)
+}
+
+func (x *UserInfoResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	var v BaseResponse.BaseResp
+	offset, err = fastpb.ReadMessage(buf, _type, &v)
+	if err != nil {
+		return offset, err
+	}
+	x.BaseResp = &v
+	return offset, nil
+}
+
+func (x *UserInfoResponse) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	var v User
+	offset, err = fastpb.ReadMessage(buf, _type, &v)
+	if err != nil {
+		return offset, err
+	}
+	x.User = &v
+	return offset, nil
+}
+
+func (x *ChangeUserFollowCountRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 3:
+		offset, err = x.fastReadField3(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_ChangeUserFollowCountRequest[number], err)
+}
+
+func (x *ChangeUserFollowCountRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.Id, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *ChangeUserFollowCountRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	x.ToUserId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *ChangeUserFollowCountRequest) fastReadField3(buf []byte, _type int8) (offset int, err error) {
+	x.ActionType, offset, err = fastpb.ReadInt32(buf, _type)
+	return offset, err
+}
+
+func (x *MGetUserInfoRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_MGetUserInfoRequest[number], err)
+}
+
+func (x *MGetUserInfoRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	offset, err = fastpb.ReadList(buf, _type,
+		func(buf []byte, _type int8) (n int, err error) {
+			var v int64
+			v, offset, err = fastpb.ReadInt64(buf, _type)
+			if err != nil {
+				return offset, err
+			}
+			x.Uids = append(x.Uids, v)
+			return offset, err
+		})
+	return offset, err
+}
+
+func (x *MGetUserInfoResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_MGetUserInfoResponse[number], err)
+}
+
+func (x *MGetUserInfoResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	var v BaseResponse.BaseResp
+	offset, err = fastpb.ReadMessage(buf, _type, &v)
+	if err != nil {
+		return offset, err
+	}
+	x.BaseResp = &v
+	return offset, nil
+}
+
+func (x *MGetUserInfoResponse) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	var v User
+	offset, err = fastpb.ReadMessage(buf, _type, &v)
+	if err != nil {
+		return offset, err
+	}
+	x.Users = append(x.Users, &v)
+	return offset, nil
+}
+
+func (x *ChangeUserTotalFavoritedCountRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_ChangeUserTotalFavoritedCountRequest[number], err)
+}
+
+func (x *ChangeUserTotalFavoritedCountRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.Id, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *ChangeUserTotalFavoritedCountRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	x.ActionType, offset, err = fastpb.ReadInt32(buf, _type)
+	return offset, err
+}
+
+func (x *ChangeUserWorkCountRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_ChangeUserWorkCountRequest[number], err)
+}
+
+func (x *ChangeUserWorkCountRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.Id, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *ChangeUserWorkCountRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	x.ActionType, offset, err = fastpb.ReadInt32(buf, _type)
+	return offset, err
+}
+
+func (x *ChangeUserFavoriteCountRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_ChangeUserFavoriteCountRequest[number], err)
+}
+
+func (x *ChangeUserFavoriteCountRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.Id, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *ChangeUserFavoriteCountRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	x.ActionType, offset, err = fastpb.ReadInt32(buf, _type)
+	return offset, err
+}
+
+func (x *UpdateUserInfoResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_UpdateUserInfoResponse[number], err)
+}
+
+func (x *UpdateUserInfoResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	var v BaseResponse.BaseResp
+	offset, err = fastpb.ReadMessage(buf, _type, &v)
+	if err != nil {
+		return offset, err
+	}
+	x.BaseResp = &v
+	return offset, nil
 }
 
 func (x *User) FastWrite(buf []byte) (offset int) {
@@ -553,29 +833,227 @@ func (x *UserLoginResponse) fastWriteField2(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *BaseResp) Size() (n int) {
+func (x *UserInfoRequest) FastWrite(buf []byte) (offset int) {
 	if x == nil {
-		return n
+		return offset
 	}
-	n += x.sizeField1()
-	n += x.sizeField2()
-	return n
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	return offset
 }
 
-func (x *BaseResp) sizeField1() (n int) {
-	if x.StatusCode == 0 {
-		return n
+func (x *UserInfoRequest) fastWriteField1(buf []byte) (offset int) {
+	if x.FromId == 0 {
+		return offset
 	}
-	n += fastpb.SizeInt64(1, x.GetStatusCode())
-	return n
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetFromId())
+	return offset
 }
 
-func (x *BaseResp) sizeField2() (n int) {
-	if x.StatusMsg == "" {
-		return n
+func (x *UserInfoRequest) fastWriteField2(buf []byte) (offset int) {
+	if x.ToId == 0 {
+		return offset
 	}
-	n += fastpb.SizeString(2, x.GetStatusMsg())
-	return n
+	offset += fastpb.WriteInt64(buf[offset:], 2, x.GetToId())
+	return offset
+}
+
+func (x *UserInfoResponse) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	return offset
+}
+
+func (x *UserInfoResponse) fastWriteField1(buf []byte) (offset int) {
+	if x.BaseResp == nil {
+		return offset
+	}
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
+	return offset
+}
+
+func (x *UserInfoResponse) fastWriteField2(buf []byte) (offset int) {
+	if x.User == nil {
+		return offset
+	}
+	offset += fastpb.WriteMessage(buf[offset:], 2, x.GetUser())
+	return offset
+}
+
+func (x *ChangeUserFollowCountRequest) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	offset += x.fastWriteField3(buf[offset:])
+	return offset
+}
+
+func (x *ChangeUserFollowCountRequest) fastWriteField1(buf []byte) (offset int) {
+	if x.Id == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetId())
+	return offset
+}
+
+func (x *ChangeUserFollowCountRequest) fastWriteField2(buf []byte) (offset int) {
+	if x.ToUserId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 2, x.GetToUserId())
+	return offset
+}
+
+func (x *ChangeUserFollowCountRequest) fastWriteField3(buf []byte) (offset int) {
+	if x.ActionType == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt32(buf[offset:], 3, x.GetActionType())
+	return offset
+}
+
+func (x *MGetUserInfoRequest) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *MGetUserInfoRequest) fastWriteField1(buf []byte) (offset int) {
+	if len(x.Uids) == 0 {
+		return offset
+	}
+	offset += fastpb.WriteListPacked(buf[offset:], 1, len(x.GetUids()),
+		func(buf []byte, numTagOrKey, numIdxOrVal int32) int {
+			offset := 0
+			offset += fastpb.WriteInt64(buf[offset:], numTagOrKey, x.GetUids()[numIdxOrVal])
+			return offset
+		})
+	return offset
+}
+
+func (x *MGetUserInfoResponse) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	return offset
+}
+
+func (x *MGetUserInfoResponse) fastWriteField1(buf []byte) (offset int) {
+	if x.BaseResp == nil {
+		return offset
+	}
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
+	return offset
+}
+
+func (x *MGetUserInfoResponse) fastWriteField2(buf []byte) (offset int) {
+	if x.Users == nil {
+		return offset
+	}
+	for i := range x.GetUsers() {
+		offset += fastpb.WriteMessage(buf[offset:], 2, x.GetUsers()[i])
+	}
+	return offset
+}
+
+func (x *ChangeUserTotalFavoritedCountRequest) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	return offset
+}
+
+func (x *ChangeUserTotalFavoritedCountRequest) fastWriteField1(buf []byte) (offset int) {
+	if x.Id == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetId())
+	return offset
+}
+
+func (x *ChangeUserTotalFavoritedCountRequest) fastWriteField2(buf []byte) (offset int) {
+	if x.ActionType == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt32(buf[offset:], 2, x.GetActionType())
+	return offset
+}
+
+func (x *ChangeUserWorkCountRequest) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	return offset
+}
+
+func (x *ChangeUserWorkCountRequest) fastWriteField1(buf []byte) (offset int) {
+	if x.Id == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetId())
+	return offset
+}
+
+func (x *ChangeUserWorkCountRequest) fastWriteField2(buf []byte) (offset int) {
+	if x.ActionType == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt32(buf[offset:], 2, x.GetActionType())
+	return offset
+}
+
+func (x *ChangeUserFavoriteCountRequest) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	return offset
+}
+
+func (x *ChangeUserFavoriteCountRequest) fastWriteField1(buf []byte) (offset int) {
+	if x.Id == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetId())
+	return offset
+}
+
+func (x *ChangeUserFavoriteCountRequest) fastWriteField2(buf []byte) (offset int) {
+	if x.ActionType == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt32(buf[offset:], 2, x.GetActionType())
+	return offset
+}
+
+func (x *UpdateUserInfoResponse) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *UpdateUserInfoResponse) fastWriteField1(buf []byte) (offset int) {
+	if x.BaseResp == nil {
+		return offset
+	}
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
+	return offset
 }
 
 func (x *User) Size() (n int) {
@@ -784,9 +1262,227 @@ func (x *UserLoginResponse) sizeField2() (n int) {
 	return n
 }
 
-var fieldIDToName_BaseResp = map[int32]string{
-	1: "StatusCode",
-	2: "StatusMsg",
+func (x *UserInfoRequest) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	return n
+}
+
+func (x *UserInfoRequest) sizeField1() (n int) {
+	if x.FromId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.GetFromId())
+	return n
+}
+
+func (x *UserInfoRequest) sizeField2() (n int) {
+	if x.ToId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(2, x.GetToId())
+	return n
+}
+
+func (x *UserInfoResponse) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	return n
+}
+
+func (x *UserInfoResponse) sizeField1() (n int) {
+	if x.BaseResp == nil {
+		return n
+	}
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
+	return n
+}
+
+func (x *UserInfoResponse) sizeField2() (n int) {
+	if x.User == nil {
+		return n
+	}
+	n += fastpb.SizeMessage(2, x.GetUser())
+	return n
+}
+
+func (x *ChangeUserFollowCountRequest) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	n += x.sizeField3()
+	return n
+}
+
+func (x *ChangeUserFollowCountRequest) sizeField1() (n int) {
+	if x.Id == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.GetId())
+	return n
+}
+
+func (x *ChangeUserFollowCountRequest) sizeField2() (n int) {
+	if x.ToUserId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(2, x.GetToUserId())
+	return n
+}
+
+func (x *ChangeUserFollowCountRequest) sizeField3() (n int) {
+	if x.ActionType == 0 {
+		return n
+	}
+	n += fastpb.SizeInt32(3, x.GetActionType())
+	return n
+}
+
+func (x *MGetUserInfoRequest) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *MGetUserInfoRequest) sizeField1() (n int) {
+	if len(x.Uids) == 0 {
+		return n
+	}
+	n += fastpb.SizeListPacked(1, len(x.GetUids()),
+		func(numTagOrKey, numIdxOrVal int32) int {
+			n := 0
+			n += fastpb.SizeInt64(numTagOrKey, x.GetUids()[numIdxOrVal])
+			return n
+		})
+	return n
+}
+
+func (x *MGetUserInfoResponse) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	return n
+}
+
+func (x *MGetUserInfoResponse) sizeField1() (n int) {
+	if x.BaseResp == nil {
+		return n
+	}
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
+	return n
+}
+
+func (x *MGetUserInfoResponse) sizeField2() (n int) {
+	if x.Users == nil {
+		return n
+	}
+	for i := range x.GetUsers() {
+		n += fastpb.SizeMessage(2, x.GetUsers()[i])
+	}
+	return n
+}
+
+func (x *ChangeUserTotalFavoritedCountRequest) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	return n
+}
+
+func (x *ChangeUserTotalFavoritedCountRequest) sizeField1() (n int) {
+	if x.Id == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.GetId())
+	return n
+}
+
+func (x *ChangeUserTotalFavoritedCountRequest) sizeField2() (n int) {
+	if x.ActionType == 0 {
+		return n
+	}
+	n += fastpb.SizeInt32(2, x.GetActionType())
+	return n
+}
+
+func (x *ChangeUserWorkCountRequest) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	return n
+}
+
+func (x *ChangeUserWorkCountRequest) sizeField1() (n int) {
+	if x.Id == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.GetId())
+	return n
+}
+
+func (x *ChangeUserWorkCountRequest) sizeField2() (n int) {
+	if x.ActionType == 0 {
+		return n
+	}
+	n += fastpb.SizeInt32(2, x.GetActionType())
+	return n
+}
+
+func (x *ChangeUserFavoriteCountRequest) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	return n
+}
+
+func (x *ChangeUserFavoriteCountRequest) sizeField1() (n int) {
+	if x.Id == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.GetId())
+	return n
+}
+
+func (x *ChangeUserFavoriteCountRequest) sizeField2() (n int) {
+	if x.ActionType == 0 {
+		return n
+	}
+	n += fastpb.SizeInt32(2, x.GetActionType())
+	return n
+}
+
+func (x *UpdateUserInfoResponse) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *UpdateUserInfoResponse) sizeField1() (n int) {
+	if x.BaseResp == nil {
+		return n
+	}
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
+	return n
 }
 
 var fieldIDToName_User = map[int32]string{
@@ -822,3 +1518,49 @@ var fieldIDToName_UserLoginResponse = map[int32]string{
 	1: "BaseResp",
 	2: "Id",
 }
+
+var fieldIDToName_UserInfoRequest = map[int32]string{
+	1: "FromId",
+	2: "ToId",
+}
+
+var fieldIDToName_UserInfoResponse = map[int32]string{
+	1: "BaseResp",
+	2: "User",
+}
+
+var fieldIDToName_ChangeUserFollowCountRequest = map[int32]string{
+	1: "Id",
+	2: "ToUserId",
+	3: "ActionType",
+}
+
+var fieldIDToName_MGetUserInfoRequest = map[int32]string{
+	1: "Uids",
+}
+
+var fieldIDToName_MGetUserInfoResponse = map[int32]string{
+	1: "BaseResp",
+	2: "Users",
+}
+
+var fieldIDToName_ChangeUserTotalFavoritedCountRequest = map[int32]string{
+	1: "Id",
+	2: "ActionType",
+}
+
+var fieldIDToName_ChangeUserWorkCountRequest = map[int32]string{
+	1: "Id",
+	2: "ActionType",
+}
+
+var fieldIDToName_ChangeUserFavoriteCountRequest = map[int32]string{
+	1: "Id",
+	2: "ActionType",
+}
+
+var fieldIDToName_UpdateUserInfoResponse = map[int32]string{
+	1: "BaseResp",
+}
+
+var _ = BaseResponse.File_idl_BaseResp_proto

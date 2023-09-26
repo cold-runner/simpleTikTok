@@ -7,7 +7,7 @@ import (
 
 // Errno 定义了 miniblog 使用的错误类型.
 type Errno struct {
-	HTTP    int64
+	HTTP    int32
 	Code    string
 	Message string
 }
@@ -30,7 +30,7 @@ func (err *Errno) SetMessage(format string, args ...interface{}) *Errno {
 
 // Decode 根据参数 err 解析其中的错误信息.
 // Example: httpCode, errCode, errMsg := errno.Decode(err)
-func Decode(err error) (int64, string, string) {
+func Decode(err error) (int32, string, string) {
 	if err == nil {
 		return OK.HTTP, OK.Code, OK.Message
 	}
@@ -51,10 +51,10 @@ func MatchErr(error error) *Errno {
 	if errors.As(error, &err) {
 		return err
 	}
-	return err
+	return NewErr(400, "UnknownError", error.Error())
 }
 
-func NewErr(httpCode int64, code, msg string) *Errno {
+func NewErr(httpCode int32, code, msg string) *Errno {
 	return &Errno{
 		HTTP:    httpCode,
 		Code:    code,

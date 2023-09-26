@@ -5,17 +5,14 @@ import (
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	UserService "github.com/cold-runner/simpleTikTok/kitex_gen/UserService/userservice"
-	"github.com/cold-runner/simpleTikTok/pkg/config"
 	"github.com/cold-runner/simpleTikTok/pkg/log"
-	"github.com/cold-runner/simpleTikTok/service/user/dal"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	"github.com/spf13/viper"
 	"net"
 )
 
 func main() {
-	dal.Init()
-	config.InitViperConfig()
+	Init()
 	// etcd 注册
 	endpoints := []string{viper.GetString("etcd.address")}
 	r, err := etcd.NewEtcdRegistry(endpoints)

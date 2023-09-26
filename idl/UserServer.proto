@@ -1,11 +1,7 @@
 syntax = "proto3";
 package user;
 option go_package ="UserService";
-
-message BaseResp {
-  int64 status_code = 1; // 状态码，0-成功，其他值-失败
-  string status_msg = 2; //返回状态描述
-}
+import "idl/BaseResp.proto";
 
 message User {
   int64 id = 1;
@@ -28,7 +24,7 @@ message UserRegisterRequest {
 }
 
 message UserRegisterResponse {
-  BaseResp base_resp = 1;
+  baseResp.BaseResp base_resp = 1;
   int64 id = 2;
 }
 
@@ -39,12 +35,67 @@ message UserLoginRequest {
 }
 
 message UserLoginResponse {
-  BaseResp base_resp = 1;
+  baseResp.BaseResp base_resp = 1;
   int64 id = 2;
 }
 
+// 用户信息
+message UserInfoRequest {
+  int64 fromId = 1;
+  int64 toId = 2;
+}
+
+message UserInfoResponse {
+  baseResp.BaseResp base_resp = 1;
+  User user = 2;
+}
+
+// 修改用户关注数
+message ChangeUserFollowCountRequest {
+  int64 id = 1;
+  int64 to_user_id = 2;
+  int32 action_type = 3;
+}
+// 获取多个用户信息
+message MGetUserInfoRequest {
+  repeated int64 uids = 1;
+}
+
+message MGetUserInfoResponse {
+  baseResp.BaseResp base_resp = 1;
+  repeated User users = 2;
+}
+
+// 修改用户获赞数量
+message ChangeUserTotalFavoritedCountRequest {
+  int64 id = 1;
+  int32 action_type = 2; // 1-增加，2-减少
+}
+
+// 修改用户作品数量
+message ChangeUserWorkCountRequest {
+  int64 id = 1;
+  int32 action_type = 2; // 1-增加，2-减少
+}
+
+// 修改用户喜欢(点赞)数量
+message ChangeUserFavoriteCountRequest {
+  int64 id = 1;
+  int32 action_type = 2; // 1-增加，2-减少
+}
+
+message UpdateUserInfoResponse {
+  baseResp.BaseResp base_resp = 1;
+}
 
 service UserService {
   rpc Register(UserRegisterRequest) returns (UserRegisterResponse) {}
   rpc Login(UserLoginRequest) returns (UserLoginResponse) {}
+  rpc GetUserInfo(UserInfoRequest) returns (UserInfoResponse) {}
+  rpc MGetUserInfo(MGetUserInfoRequest) returns(MGetUserInfoResponse) {}
+  // 用户信息更新相关服务
+  rpc ChangeUserFollowCount(ChangeUserFollowCountRequest) returns (baseResp.BaseResp) {}
+  rpc ChangeUserTotalFavoritedCount(ChangeUserTotalFavoritedCountRequest) returns (UpdateUserInfoResponse) {}
+  rpc ChangeUserWorkCount(ChangeUserWorkCountRequest) returns (UpdateUserInfoResponse) {}
+  rpc ChangeUserFavoriteCount(ChangeUserFavoriteCountRequest) returns (UpdateUserInfoResponse) {}
 }

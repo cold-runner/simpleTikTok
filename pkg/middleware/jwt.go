@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cold-runner/simpleTikTok/apiServer/biz/model/ApiServer"
 	"github.com/cold-runner/simpleTikTok/apiServer/rpc"
@@ -15,13 +16,13 @@ import (
 
 var JwtMiddleware *jwt.HertzJWTMiddleware
 var identityKey = "id"
+var IdentityKey = identityKey
 
 func InitJwt() {
 	log.Infow("Initializing Jwt middleware")
 
 	// the jwt middleware
 	JwtMiddleware, _ = jwt.New(&jwt.HertzJWTMiddleware{
-		Realm:            "simpleTikTok",
 		SigningAlgorithm: "HS256",
 		Key:              []byte("secret key"),
 		Timeout:          time.Hour,
@@ -100,7 +101,7 @@ func InitJwt() {
 		IdentityHandler: func(ctx context.Context, c *app.RequestContext) interface{} {
 			claims := jwt.ExtractClaims(ctx, c)
 			return &ApiServer.User{
-				Id: claims[identityKey].(int64),
+				Id: int64(claims[identityKey].(float64)),
 			}
 		},
 		IdentityKey: identityKey,
@@ -112,16 +113,15 @@ func InitJwt() {
 		// - "query:<name>"
 		// - "cookie:<name>"
 		// - "param:<name>"
-		TokenLookup: "header: Authorization, query: token, form: token, " +
-			"param: token, cookie: token",
+		TokenLookup: "header: Authorization, query: token, form: token, param: token, cookie: token",
 		// TokenLookup: "query:token",
 		// TokenLookup: "cookie:token",
-		TokenHeadName:               "Bearer",
-		WithoutDefaultTokenHeadName: false,
-		TimeFunc:                    time.Now,
-		//HTTPStatusMessageFunc: func(e error, ctx context.Context, c *app.RequestContext) string {
-		//	return e.Error()
-		//},
+		TokenHeadName: "Bearer",
+		//WithoutDefaultTokenHeadName: false,
+		TimeFunc: time.Now,
+		HTTPStatusMessageFunc: func(e error, ctx context.Context, c *app.RequestContext) string {
+			return e.Error()
+		},
 		//SendCookie:        true,
 		//CookieMaxAge:      time.Hour,
 		//SecureCookie:      false,
@@ -129,7 +129,86 @@ func InitJwt() {
 		//CookieDomain:      ".test.com",
 		//CookieName:        "jwt-cookie",
 		//CookieSameSite:    protocol.CookieSameSiteDisabled,
-		SendAuthorization: true,
-		DisabledAbort:     false,
+		//SendAuthorization: true,
+		//DisabledAbort:     false,
 	})
+}
+
+func MiddlewareFunc() app.HandlerFunc {
+	return func(ctx context.Context, c *app.RequestContext) {
+		middlewareFunc(ctx, c) // 调用实现JWT认证逻辑的函数
+	}
+}
+
+func middlewareFunc(ctx context.Context, c *app.RequestContext) {
+	claims, err := JwtMiddleware.GetClaimsFromJWT(ctx, c)
+	log.Debugw("get jwt claims", "claims", claims)
+	if err != nil {
+		if err == jwt.ErrEmptyQueryToken || err == jwt.ErrEmptyCookieToken {
+			log.Errorw("feed request with empty token")
+			c.Next(ctx)
+			return
+		}
+		log.Errorw("get jwt claims failed", "err", err)
+		unauthorized(ctx, c, http.StatusUnauthorized, err)
+		return
+	}
+
+	exp, exists := claims["exp"]
+	if !exists {
+		log.Errorw("missing exp field")
+		unauthorized(ctx, c, http.StatusBadRequest, jwt.ErrMissingExpField)
+		return
+	}
+
+	if err = checkTokenExpiration(exp); err != nil {
+		log.Errorw("check token expiration failed", "err", err)
+		unauthorized(ctx, c, http.StatusUnauthorized, err)
+		return
+	}
+
+	log.Debugw("set jwt payload", "claims", claims)
+	c.Set("JWT_PAYLOAD", claims)
+	identity := JwtMiddleware.IdentityHandler(ctx, c)
+	if identity != nil {
+		c.Set(JwtMiddleware.IdentityKey, identity)
+	}
+
+	if !JwtMiddleware.Authorizator(identity, ctx, c) {
+		log.Errorw("jwt authorizator failed", "err", jwt.ErrForbidden)
+		unauthorized(ctx, c, http.StatusForbidden, jwt.ErrForbidden)
+		return
+	}
+
+	c.Next(ctx)
+
+}
+
+func checkTokenExpiration(exp interface{}) error {
+	var expInt64 int64
+	switch v := exp.(type) {
+	case float64:
+		expInt64 = int64(v)
+	case json.Number:
+		n, err := v.Int64()
+		if err != nil {
+			return jwt.ErrWrongFormatOfExp
+		}
+		expInt64 = n
+	default:
+		return jwt.ErrWrongFormatOfExp
+	}
+	if expInt64 < JwtMiddleware.TimeFunc().Unix() {
+		return jwt.ErrExpiredToken
+	}
+	return nil
+}
+
+func unauthorized(ctx context.Context, c *app.RequestContext, code int, err error) {
+	message := JwtMiddleware.HTTPStatusMessageFunc(err, ctx, c)
+	c.Header("WWW-Authenticate", "JWT realm="+JwtMiddleware.Realm)
+	if !JwtMiddleware.DisabledAbort {
+		c.Abort()
+	}
+	JwtMiddleware.Unauthorized(ctx, c, code, message)
 }

@@ -2,7 +2,7 @@ package errno
 
 var (
 	// OK 代表请求成功.
-	OK = &Errno{HTTP: 200, Code: "", Message: "Action completed successfully."}
+	OK = &Errno{HTTP: 0, Code: "", Message: "Request Success."}
 
 	// InternalServerError 表示所有未知的服务器端错误.
 	InternalServerError = &Errno{HTTP: 500, Code: "InternalError", Message: "Internal server errno."}
@@ -34,4 +34,21 @@ var (
 
 	// ErrUserPassword 表示用户密码错误.
 	ErrUserPassword = &Errno{HTTP: 401, Code: "UserPassword", Message: "User password error."}
+
+	// ErrAlreadyFollow  表示用户已经关注.
+	ErrAlreadyFollow = &Errno{HTTP: 409,
+		Code:    "UserConflict.UserAlreadyFollow",
+		Message: "Already follow the user."}
+
+	// ErrNotFollow 表示用户没有关注.
+	ErrNotFollow = &Errno{HTTP: 409, Code: "UserConflict.UserNotFollow",
+		Message: "Not following the user."}
+	// ErrInvalidUpdate 表示更新数据库时出错.
+	ErrInvalidUpdate = &Errno{HTTP: 400, Code: "InvalidParameter." +
+		"UpdateError", Message: "Error occurred while updating the database."}
+	// ErrRedisNotInitialized ErrInvalidDelete 表示redis数据库未初始化连接.
+	ErrRedisNotInitialized = &Errno{HTTP: 500, Code: "RedisNotInitialized", Message: "Redis not initialized."}
+
+	ErrInvalidDeleteComment = &Errno{HTTP: 400, Code: "InvalidParameter",
+		Message: "you can't delete this comment."}
 )

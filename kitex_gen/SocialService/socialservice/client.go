@@ -11,10 +11,11 @@ import (
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
-	CommentAction(ctx context.Context, Req *SocialService.CommentActionRequest, callOptions ...callopt.Option) (r *SocialService.CommentActionResponse, err error)
+	FavoriteAction(ctx context.Context, Req *SocialService.FavoriteActionRequest, callOptions ...callopt.Option) (r *SocialService.FavoriteActionResponse, err error)
+	CommentAction(ctx context.Context, Req *SocialService.CommentActionRequest, callOptions ...callopt.Option) (r *SocialService.CommentActionResposne, err error)
+	FavoriteList(ctx context.Context, Req *SocialService.FavoriteListRequest, callOptions ...callopt.Option) (r *SocialService.FavoriteListResponse, err error)
 	CommentList(ctx context.Context, Req *SocialService.CommentListRequest, callOptions ...callopt.Option) (r *SocialService.CommentListResponse, err error)
-	LikeAction(ctx context.Context, Req *SocialService.FavoriteActionRequest, callOptions ...callopt.Option) (r *SocialService.FavoriteActionResponse, err error)
-	LikeList(ctx context.Context, Req *SocialService.FavoriteListRequest, callOptions ...callopt.Option) (r *SocialService.FavoriteListResponse, err error)
+	GetFavoriteVidList(ctx context.Context, Req *SocialService.GetFavoriteVideoByUidRequest, callOptions ...callopt.Option) (r *SocialService.GetFavoriteVideoByUidResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -33,7 +34,7 @@ func NewClient(destService string, opts ...client.Option) (Client, error) {
 	}, nil
 }
 
-// MustNewClient creates a client for the service defined in IDL. It panics if any errno occurs.
+// MustNewClient creates a client for the service defined in IDL. It panics if any error occurs.
 func MustNewClient(destService string, opts ...client.Option) Client {
 	kc, err := NewClient(destService, opts...)
 	if err != nil {
@@ -46,9 +47,19 @@ type kSocialServiceClient struct {
 	*kClient
 }
 
-func (p *kSocialServiceClient) CommentAction(ctx context.Context, Req *SocialService.CommentActionRequest, callOptions ...callopt.Option) (r *SocialService.CommentActionResponse, err error) {
+func (p *kSocialServiceClient) FavoriteAction(ctx context.Context, Req *SocialService.FavoriteActionRequest, callOptions ...callopt.Option) (r *SocialService.FavoriteActionResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.FavoriteAction(ctx, Req)
+}
+
+func (p *kSocialServiceClient) CommentAction(ctx context.Context, Req *SocialService.CommentActionRequest, callOptions ...callopt.Option) (r *SocialService.CommentActionResposne, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.CommentAction(ctx, Req)
+}
+
+func (p *kSocialServiceClient) FavoriteList(ctx context.Context, Req *SocialService.FavoriteListRequest, callOptions ...callopt.Option) (r *SocialService.FavoriteListResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.FavoriteList(ctx, Req)
 }
 
 func (p *kSocialServiceClient) CommentList(ctx context.Context, Req *SocialService.CommentListRequest, callOptions ...callopt.Option) (r *SocialService.CommentListResponse, err error) {
@@ -56,12 +67,7 @@ func (p *kSocialServiceClient) CommentList(ctx context.Context, Req *SocialServi
 	return p.kClient.CommentList(ctx, Req)
 }
 
-func (p *kSocialServiceClient) LikeAction(ctx context.Context, Req *SocialService.FavoriteActionRequest, callOptions ...callopt.Option) (r *SocialService.FavoriteActionResponse, err error) {
+func (p *kSocialServiceClient) GetFavoriteVidList(ctx context.Context, Req *SocialService.GetFavoriteVideoByUidRequest, callOptions ...callopt.Option) (r *SocialService.GetFavoriteVideoByUidResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.LikeAction(ctx, Req)
-}
-
-func (p *kSocialServiceClient) LikeList(ctx context.Context, Req *SocialService.FavoriteListRequest, callOptions ...callopt.Option) (r *SocialService.FavoriteListResponse, err error) {
-	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.LikeList(ctx, Req)
+	return p.kClient.GetFavoriteVidList(ctx, Req)
 }

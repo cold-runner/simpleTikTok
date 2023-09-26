@@ -60,8 +60,17 @@ func GetUserInfo(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	v, _ := c.Get(mw.IdentityKey)
+	log.Infow("Calling remote rpc get user info request:", "req", req)
+	resp, err := rpc.GetUserInfo(context.Background(),
+		&UserService.UserInfoRequest{
+			FromId: v.(*ApiServer.User).Id,
+			ToId:   req.UserId,
+		})
 
-	resp := new(ApiServer.UserInfoResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	if err != nil {
+		response.SendUserInfoResponse(c, err, nil)
+		return
+	}
+	response.SendUserInfoResponse(c, nil, resp)
 }

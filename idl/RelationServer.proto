@@ -1,0 +1,75 @@
+syntax = "proto3";
+package relation;
+option go_package = "RelationService";
+import "idl/UserServer.proto";
+import "idl/BaseResp.proto";
+
+message User {
+  int64 id = 1;
+  string name = 2;
+  int64 follow_count = 3;
+  int64 follower_count = 4;
+  bool is_follow = 5;
+}
+
+// 用户关注/取关操作
+message RelationActionRequest {
+  int64 uid = 1; // 关注者id
+  int64 to_user_id = 2; // 被关注者id
+  int32 action_type = 3; // 1-关注，2-取消关注
+}
+
+message RelationActionResponse {
+  baseResp.BaseResp base_resp = 1;
+}
+
+// 用户关注列表
+message RelationFollowListRequest {
+  int64 uid = 1; // 用户id
+  int64 to_uid = 2; // 被查询用户id
+}
+
+message RelationFollowListResponse {
+  baseResp.BaseResp base_resp = 1;
+  repeated user.User follow_list = 2;
+}
+
+// 用户粉丝列表
+message RelationFollowerListRequest {
+  int64 uid = 1; // 用户id
+  int64 to_uid = 2; // 被查询用户id
+}
+
+message RelationFollowerListResponse {
+  baseResp.BaseResp base_resp = 1;
+  repeated user.User follower_list = 2;
+}
+
+// 用户关系查询
+message RelationQueryRequest {
+  int64 uid = 1; // 用户id
+  int64 to_user_id = 2; // 被查询用户id
+}
+
+message RelationQueryResponse{
+  baseResp.BaseResp base_resp = 1;
+  bool is_follow = 2; // true-已关注，false-未关注
+}
+
+// 用户信息查询关系服务，批量查询带有关注关系的用户信息
+message QueryUserInfosWithRelationRequest {
+  int64 uid = 1; // 用户id
+  repeated int64 id_list = 2; // 被查询用户id列表
+}
+
+message QueryUserInfosWithRelationResponse {
+  repeated user.User UserInfoList = 1;
+}
+
+service RelationService {
+  rpc RelationAction(RelationActionRequest) returns (RelationActionResponse) {};
+  rpc GetFollowList(RelationFollowListRequest) returns (RelationFollowListResponse) {};
+  rpc GetFollowerList(RelationFollowerListRequest) returns (RelationFollowerListResponse) {};
+  rpc QueryRelation(RelationQueryRequest) returns (RelationQueryResponse) {};
+  rpc QueryUserInfosWithRelation(QueryUserInfosWithRelationRequest) returns (QueryUserInfosWithRelationResponse) {};
+}

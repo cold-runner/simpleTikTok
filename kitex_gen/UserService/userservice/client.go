@@ -6,6 +6,7 @@ import (
 	"context"
 	client "github.com/cloudwego/kitex/client"
 	callopt "github.com/cloudwego/kitex/client/callopt"
+	BaseResponse "github.com/cold-runner/simpleTikTok/kitex_gen/BaseResponse"
 	UserService "github.com/cold-runner/simpleTikTok/kitex_gen/UserService"
 )
 
@@ -13,6 +14,12 @@ import (
 type Client interface {
 	Register(ctx context.Context, Req *UserService.UserRegisterRequest, callOptions ...callopt.Option) (r *UserService.UserRegisterResponse, err error)
 	Login(ctx context.Context, Req *UserService.UserLoginRequest, callOptions ...callopt.Option) (r *UserService.UserLoginResponse, err error)
+	GetUserInfo(ctx context.Context, Req *UserService.UserInfoRequest, callOptions ...callopt.Option) (r *UserService.UserInfoResponse, err error)
+	MGetUserInfo(ctx context.Context, Req *UserService.MGetUserInfoRequest, callOptions ...callopt.Option) (r *UserService.MGetUserInfoResponse, err error)
+	ChangeUserFollowCount(ctx context.Context, Req *UserService.ChangeUserFollowCountRequest, callOptions ...callopt.Option) (r *BaseResponse.BaseResp, err error)
+	ChangeUserTotalFavoritedCount(ctx context.Context, Req *UserService.ChangeUserTotalFavoritedCountRequest, callOptions ...callopt.Option) (r *UserService.UpdateUserInfoResponse, err error)
+	ChangeUserWorkCount(ctx context.Context, Req *UserService.ChangeUserWorkCountRequest, callOptions ...callopt.Option) (r *UserService.UpdateUserInfoResponse, err error)
+	ChangeUserFavoriteCount(ctx context.Context, Req *UserService.ChangeUserFavoriteCountRequest, callOptions ...callopt.Option) (r *UserService.UpdateUserInfoResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -52,4 +59,34 @@ func (p *kUserServiceClient) Register(ctx context.Context, Req *UserService.User
 func (p *kUserServiceClient) Login(ctx context.Context, Req *UserService.UserLoginRequest, callOptions ...callopt.Option) (r *UserService.UserLoginResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.Login(ctx, Req)
+}
+
+func (p *kUserServiceClient) GetUserInfo(ctx context.Context, Req *UserService.UserInfoRequest, callOptions ...callopt.Option) (r *UserService.UserInfoResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetUserInfo(ctx, Req)
+}
+
+func (p *kUserServiceClient) MGetUserInfo(ctx context.Context, Req *UserService.MGetUserInfoRequest, callOptions ...callopt.Option) (r *UserService.MGetUserInfoResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.MGetUserInfo(ctx, Req)
+}
+
+func (p *kUserServiceClient) ChangeUserFollowCount(ctx context.Context, Req *UserService.ChangeUserFollowCountRequest, callOptions ...callopt.Option) (r *BaseResponse.BaseResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.ChangeUserFollowCount(ctx, Req)
+}
+
+func (p *kUserServiceClient) ChangeUserTotalFavoritedCount(ctx context.Context, Req *UserService.ChangeUserTotalFavoritedCountRequest, callOptions ...callopt.Option) (r *UserService.UpdateUserInfoResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.ChangeUserTotalFavoritedCount(ctx, Req)
+}
+
+func (p *kUserServiceClient) ChangeUserWorkCount(ctx context.Context, Req *UserService.ChangeUserWorkCountRequest, callOptions ...callopt.Option) (r *UserService.UpdateUserInfoResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.ChangeUserWorkCount(ctx, Req)
+}
+
+func (p *kUserServiceClient) ChangeUserFavoriteCount(ctx context.Context, Req *UserService.ChangeUserFavoriteCountRequest, callOptions ...callopt.Option) (r *UserService.UpdateUserInfoResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.ChangeUserFavoriteCount(ctx, Req)
 }

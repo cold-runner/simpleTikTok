@@ -3,6 +3,7 @@ package db
 import (
 	"fmt"
 	viperInit "github.com/cold-runner/simpleTikTok/pkg/config"
+	"github.com/cold-runner/simpleTikTok/pkg/log"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -38,6 +39,11 @@ func (o *MySQLConfig) DSN() string {
 // newMySQL 使用给定的选项创建一个新的 gorm 数据库实例.
 func newMySQL(config *MySQLConfig) (*gorm.DB, error) {
 	logLevel := logger.Silent
+	loc, err := time.LoadLocation("Asia/Shanghai")
+	if err != nil {
+		log.Errorw("load location failed", "err", err)
+		return nil, err
+	}
 	if config.LogLevel != 0 {
 		logLevel = logger.LogLevel(config.LogLevel)
 	}
@@ -45,6 +51,9 @@ func newMySQL(config *MySQLConfig) (*gorm.DB, error) {
 		Logger:                 logger.Default.LogMode(logLevel),
 		PrepareStmt:            true,
 		SkipDefaultTransaction: true,
+		NowFunc: func() time.Time {
+			return time.Now().In(loc)
+		},
 	})
 	if err != nil {
 		return nil, err

@@ -16,10 +16,42 @@ log-user:
   format: console
   output-paths: [ /tmp/log/user/user.log, stdout ]
 
+## 用户关系服务日志配置
+log-relation:
+  disable-caller: false
+  disable-stacktrace: false
+  level: debug
+  format: console
+  output-paths: [ /tmp/log/relation/relation.log, stdout ]
+
+## 视频服务日志配置
+log-video:
+  disable-caller: false
+  disable-stacktrace: false
+  level: debug
+  format: console
+  output-paths: [ /tmp/log/video/video.log, stdout ]
+
+## 社交服务日志配置
+log-social:
+  disable-caller: false
+  disable-stacktrace: false
+  level: debug
+  format: console
+  output-paths: [ /tmp/log/social/social.log, stdout ]
+
+## dtm 服务日志配置
+log-dtm:
+  disable-caller: false
+  disable-stacktrace: false
+  level: debug
+  format: console
+  output-paths: [ /tmp/log/dtm/dtm.log, stdout ]
+
 # 数据库相关配置
 
 ## MySQL 数据库配置
-db-user:
+db-default:
   host: 127.0.0.1
   username: tiktokAdmin
   password: tiktok1234
@@ -32,7 +64,57 @@ db-user:
 # Etcd 相关配置
 etcd:
   address: localhost:2379
+  # API 服务
   api-service-name : ApiService
   api-service-address: :8888
+  # 用户服务
   user-service-address: :8101
   user-service-name: UserService
+  # 关系服务
+  relation-service-address: :8102
+  relation-service-name: RelationService
+  # 视频服务
+  video-service-address: :8103
+  video-service-name: VideoService
+  # 社交服务
+  social-service-address: :8104
+  social-service-name: SocialService
+
+# Redis 相关配置
+redis:
+  address: localhost:6379
+  password: ""
+  db:
+    relation: 0
+    follow: 1
+    follower: 2
+    userInfo: 3
+
+
+# RabbbitMQ 相关配置
+mq:
+  url: amqp://guest:guest@localhost:5672/
+
+# MinIO 相关配置
+minio:
+  url: localhost:9000
+  access-key: tiktok
+  secret-key: tiktokadmin
+  bucket:
+    video: videos
+    image: images
+  host: localhost
+  port: 9000
+  public:
+    host: 120.40.6.33
+
+# DTM 服务相关配置
+dtm:
+  server: http://localhost:36789/api/dtmsvr
+  health:
+    host: http://localhost
+  http:
+    host: http://host.docker.internal
+    api: /api/saga
+    port: 8082
+    
